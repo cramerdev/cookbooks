@@ -5,7 +5,7 @@
 ruby_version = [].tap do |v|
   v << node[:rvm][:ruby][:implementation] if node[:rvm][:ruby][:implementation]
   v << node[:rvm][:ruby][:version] if node[:rvm][:ruby][:version]
-  v << node[:rvm][:ruby][:patch_level] if node[:rvm][:ruby][:patch_level]
+  v << "p#{node[:rvm][:ruby][:patch_level]}" if node[:rvm][:ruby][:patch_level]
 end * '-'
 
 if ruby_version.size > 0
