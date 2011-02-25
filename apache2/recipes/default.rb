@@ -179,6 +179,13 @@ template "#{node[:apache][:dir]}/sites-available/default" do
   notifies :restart, resources(:service => "apache2")
 end
 
+cookbook_file '/var/www/index.html' do
+  backup false
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
 include_recipe "apache2::mod_status"
 include_recipe "apache2::mod_alias"
 include_recipe "apache2::mod_auth_basic"
@@ -201,7 +208,7 @@ include_recipe "apache2::mod_ssl"
 include_recipe "apache2::mod_log_config" if platform?("centos", "redhat", "suse")
 
 # uncomment to get working example site on centos/redhat/fedora
-#apache_site "default"
+apache_site "default"
 
 service "apache2" do
   action :start

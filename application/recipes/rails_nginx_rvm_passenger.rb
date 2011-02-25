@@ -35,23 +35,23 @@ search(:apps) do |app|
     end
 
     ## Then, configure nginx
-#    template "#{node[:nginx][:dir]}/sites-available/#{app['id']}.conf" do
-      #source "rails_nginx_passenger.conf.erb"
-      #owner "root"
-      #group "root"
-      #mode "0644"
-      #variables(
-        #:app => app['id'],
-        #:docroot => "/srv/#{app['id']}/current/public",
-        #:server_name => "#{app['id']}.#{node[:domain]}",
-        #:server_aliases => [ node[:fqdn], app['id'] ],
-        #:rails_env => app['environment']
-      #)
-    #end
+    template "#{node[:nginx][:dir]}/sites-available/#{app['id']}.conf" do
+      source "rails_nginx_passenger.conf.erb"
+      owner "root"
+      group "root"
+      mode "0644"
+      variables(
+        :app => app['id'],
+        :docroot => "/srv/#{app['id']}/current/public",
+        :server_name => "#{app['id']}.#{node[:domain]}",
+        :server_aliases => [ node[:fqdn], app['id'] ],
+        :rails_env => app['environment']
+      )
+    end
 
-#    nginx_site "#{app['id']}.conf" do
-      #notifies :restart, resources(:service => "nginx")
-    #end
+    nginx_site "#{app['id']}.conf" do
+      notifies :restart, resources(:service => "nginx")
+    end
 
     directory app[:deploy_to] do
       owner app[:owner]
@@ -115,15 +115,15 @@ search(:apps) do |app|
       #else
         #migrate false
       #end
-      #
-      #restart_command do
-        #case app["type"]
-        #when /nginx/
-          #service "nginx" do action :restart; end
-        #when /apache/
-          #service "apache" do action :restart; end
-        #end
-      #end
+
+      restart_command do
+        case app["type"]
+        when /nginx/
+          service "nginx" do action :restart; end
+        when /apache/
+          service "apache" do action :restart; end
+        end
+      end
 
       symlink_before_migrate({ "database.yml" => "config/database.yml" })
 

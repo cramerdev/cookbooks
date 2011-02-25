@@ -70,6 +70,27 @@ directory node[:nginx][:dir] do
   mode "0755"
 end
 
+directory '/var/www/nginx-default' do
+  owner "root"
+  group "root"
+  mode '0755'
+  recursive true
+end
+
+template "#{node[:nginx][:dir]}/sites-available/default" do
+  source "default-site.erb"
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
+cookbook_file '/var/www/nginx-default/index.html' do
+  backup false
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
 unless platform?("centos","redhat","fedora")
   runit_service "nginx"
 
@@ -132,6 +153,12 @@ cookbook_file "#{node[:nginx][:dir]}/mime.types" do
   source "mime.types"
   owner "root"
   group "root"
-  mode "0644"
+  mode '0644'
   notifies :restart, resources(:service => "nginx"), :immediately
 end
+
+nginx_site 'default' do
+  notifies :restart, resources(:service => 'nginx')
+end
+
+

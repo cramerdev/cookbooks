@@ -43,6 +43,13 @@ template "nginx.conf" do
   mode 0644
 end
 
+directory '/var/www/nginx-default' do
+  owner "root"
+  group "root"
+  mode 0755
+  recursive true
+end
+
 template "#{node[:nginx][:dir]}/sites-available/default" do
   source "default-site.erb"
   owner "root"
@@ -50,7 +57,18 @@ template "#{node[:nginx][:dir]}/sites-available/default" do
   mode 0644
 end
 
+cookbook_file '/var/www/nginx-default/index.html' do
+  backup false
+  owner 'root'
+  group 'root'
+  mode 0644
+end
+
 service "nginx" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start ]
+end
+
+nginx_site 'default' do
+  notifies :restart, resources(:service => 'nginx')
 end
