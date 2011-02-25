@@ -6,12 +6,13 @@ version           "0.99.0"
 
 recipe "nginx", "Installs nginx package and sets up configuration with Debian apache style with sites-enabled/sites-available"
 recipe "nginx::source", "Installs nginx from source and sets up configuration with Debian apache style with sites-enabled/sites-available"
+recipe "nginx::passenger", "Installs passenger and nginx from source with passenger modules and sets up configuration with Debian apache style with sites-enabled/sites-available"
 
 %w{ ubuntu debian centos redhat fedora }.each do |os|
   supports os
 end
 
-%w{ build-essential  }.each do |cb|
+%w{ build-essential runit }.each do |cb|
   depends cb
 end
 

@@ -23,12 +23,16 @@
   },
   "description": "Installs and configures nginx",
   "recipes": {
+    "nginx::passenger": "Installs passenger and nginx from source with passenger modules and sets up configuration with Debian apache style with sites-enabled/sites-available",
     "nginx::source": "Installs nginx from source and sets up configuration with Debian apache style with sites-enabled/sites-available",
     "nginx": "Installs nginx package and sets up configuration with Debian apache style with sites-enabled/sites-available"
   },
   "providing": {
   },
   "dependencies": {
+    "runit": [
+
+    ],
     "build-essential": [
 
     ]

@@ -7,7 +7,7 @@
 # All rights reserved.
 #
 
-default[:nginx][:system_package] = false
+include_recipe 'nginx::passenger'
 
 search(:apps) do |app|
   if (app[:server_roles] & node.run_list.roles).length > 0

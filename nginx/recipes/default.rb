@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-package "nginx" if node[:nginx][:system_package] != false
+package "nginx"
 
 directory node[:nginx][:log_dir] do
   mode 0755
