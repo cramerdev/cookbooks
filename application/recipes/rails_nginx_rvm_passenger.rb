@@ -13,6 +13,7 @@ search(:apps) do |app|
   if (app[:server_roles] & node.run_list.roles).length > 0
 
     node.default[:apps][app[:id]][node.app_environment][:run_migrations] = false
+    node.set[:nginx][:passenger] = {}
 
     ## First, install any application specific packages
     if app[:packages]
@@ -42,8 +43,9 @@ search(:apps) do |app|
       mode "0644"
       variables(
         :app => app['id'],
-        :docroot => "/srv/#{app['id']}/current/public",
-        :server_name => "#{app['id']}.#{node[:domain]}",
+        :docroot => "#{app[:deploy_to]}/current/public",
+        :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
+          "#{app['id']}.#{node[:domain]}",
         :server_aliases => [ node[:fqdn], app['id'] ],
         :rails_env => app['environment']
       )

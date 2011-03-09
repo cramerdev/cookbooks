@@ -10,4 +10,9 @@ server {
   error_log <%= node[:nginx][:log_dir] %>/<%= @app %>-error.log;
   access_log <%= node[:nginx][:log_dir] %>/<%= @app %>-access.log;
   passenger_enabled on;
+  rails_env <%= @env %>
+
+  <%= @more %>
 }
+
+# TODO: SSL
