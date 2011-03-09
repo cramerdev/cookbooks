@@ -35,7 +35,8 @@ http {
 
   server_names_hash_bucket_size <%= node[:nginx][:server_names_hash_bucket_size] %>;
 
-  <% if node[:nginx][:passenger] %>
+  <% if node[:nginx][:passenger] && node[:nginx][:passenger][:root] &&
+        node[:nginx][:passenger][:ruby] %>
   passenger_root <%= node[:nginx][:passenger][:root] %>;
   passenger_ruby <%= node[:nginx][:passenger][:ruby] %>;
   <% end %>

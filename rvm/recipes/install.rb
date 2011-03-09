@@ -14,7 +14,7 @@ if ruby_version.size > 0
 
   bash "installing #{ruby_version}" do
     user "root"
-    code "rvm install #{ruby_version}"
+    code "rvm install #{ruby_version} && chgrp -R rvm /usr/local/rvm/rubies/#{ruby_version} && chmod -R g+w /usr/local/rvm/rubies/#{ruby_version}"
     not_if "rvm list | grep #{ruby_version}"
   end
 

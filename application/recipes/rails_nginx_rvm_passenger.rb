@@ -8,12 +8,17 @@
 #
 
 include_recipe 'nginx::passenger'
+include_recipe 'rvm'
 
 search(:apps) do |app|
   if (app[:server_roles] & node.run_list.roles).length > 0
 
     node.default[:apps][app[:id]][node.app_environment][:run_migrations] = false
-    node.set[:nginx][:passenger] = {}
+
+    node.set[:nginx][:passenger] = {
+      :root => "/usr/local/rvm/gems/#{node[:rvm][:ruby][:implementation]}-#{node[:rvm][:ruby][:version]}-p#{node[:rvm][:ruby][:patch_level]}@#{app[:gemset]}/gems/passenger-#{node[:nginx][:passenger][:version]}",
+      :ruby => "/usr/local/rvm/wrappers/#{node[:rvm][:ruby][:implementation]}-#{node[:rvm][:ruby][:version]}-p#{node[:rvm][:ruby][:patch_level]}@#{app[:gemset]}/ruby"
+    }
 
     ## First, install any application specific packages
     if app[:packages]
@@ -24,6 +29,8 @@ search(:apps) do |app|
         end
       end
     end
+
+    gemset app[:gemset]
 
     ## Next, install any application specific gems
     if app[:gems]
@@ -47,7 +54,7 @@ search(:apps) do |app|
         :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
           "#{app['id']}.#{node[:domain]}",
         :server_aliases => [ node[:fqdn], app['id'] ],
-        :rails_env => app['environment']
+        :rails_env => node[:app_environment]
       )
     end
 

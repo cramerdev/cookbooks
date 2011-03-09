@@ -77,13 +77,6 @@ directory '/var/www/nginx-default' do
   recursive true
 end
 
-template "#{node[:nginx][:dir]}/sites-available/default" do
-  source "default-site.erb"
-  owner 'root'
-  group 'root'
-  mode '0644'
-end
-
 cookbook_file '/var/www/nginx-default/index.html' do
   backup false
   owner 'root'
@@ -138,6 +131,13 @@ end
     owner "root"
     group "root"
   end
+end
+
+template "#{node[:nginx][:dir]}/sites-available/default" do
+  source "default-site.erb"
+  owner 'root'
+  group 'root'
+  mode '0644'
 end
 
 template "nginx.conf" do

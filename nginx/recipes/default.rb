@@ -50,6 +50,15 @@ directory '/var/www/nginx-default' do
   recursive true
 end
 
+['available', 'enabled'].each do |sites|
+  directory "#{node[:nginx][:dir]}/sites-#{sites}" do
+    owner "root"
+    group "root"
+    mode 0755
+    recursive true
+  end
+end
+
 template "#{node[:nginx][:dir]}/sites-available/default" do
   source "default-site.erb"
   owner "root"
