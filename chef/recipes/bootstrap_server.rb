@@ -89,6 +89,17 @@ end
     group root_group
     mode 0600
   end
+
+  # Set up symlinks so the redhat family init scripts work
+  if platform?("redhat","centos","fedora")
+    link "/etc/chef/webui.rb" do
+      to "/etc/chef/server.rb"
+    end
+
+    link "/etc/chef/solr-indexer.rb" do
+      to "/etc/chef/solr.rb"
+    end
+  end
 end
 
 directory node[:chef][:path] do
@@ -178,6 +189,33 @@ when "init"
 
     service "#{svc}" do
       action [ :enable, :start ]
+    end
+  end
+
+when "bluepill"
+
+  include_recipe "bluepill"
+
+  server_services.each do |svc|
+    template "#{node[:bluepill][:conf_dir]}/#{svc}.pill" do
+      source "#{svc}.pill.erb"
+      mode 0644
+    end
+
+    bluepill_service svc do
+      action [:enable,:load,:start]
+    end
+  end
+
+when "daemontools"
+
+  include_recipe "daemontools"
+
+  server_services.each do |svc|
+    daemontools_service svc do
+      template svc
+      log true
+      action [:enable, :start]
     end
   end
 
