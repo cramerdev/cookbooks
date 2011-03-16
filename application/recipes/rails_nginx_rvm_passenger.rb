@@ -37,22 +37,22 @@ search(:apps) do |app|
     end
 
     ## Then, configure nginx
-    template "#{node[:nginx][:dir]}/sites-available/#{app['id']}.conf" do
+    template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
       source "rails_nginx_passenger.conf.erb"
       owner "root"
       group "root"
       mode "0644"
       variables(
-        :app => app['id'],
+        :app => app[:id],
         :docroot => "#{app[:deploy_to]}/current/public",
         :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
-          "#{app['id']}.#{node[:domain]}",
-        :server_aliases => [ node[:fqdn], app['id'] ],
+          "#{app[:id]}.#{node[:domain]}",
+        :server_aliases => [ node[:fqdn], app[:id] ],
         :rails_env => node[:app_environment]
       )
     end
 
-    nginx_site "#{app['id']}.conf" do
+    nginx_site "#{app[:id]}.conf" do
       notifies :restart, resources(:service => "nginx")
     end
 
@@ -112,7 +112,7 @@ search(:apps) do |app|
       action (app[:force] || {})[node.app_environment] ? :force_deploy : :deploy
       ssh_wrapper "#{app[:deploy_to]}/deploy-ssh-wrapper" if app[:deploy_key]
 
-      #if app['migrate'][node.app_environment] && node[:apps][app['id']][node.app_environment][:run_migrations]
+      #if app[:migrate][node.app_environment] && node[:apps][app[:id]][node.app_environment][:run_migrations]
         #migrate true
         #migration_command "rake db:migrate"
       #else
@@ -120,7 +120,7 @@ search(:apps) do |app|
       #end
 
       restart_command do
-        case app["type"]
+        case app[:type]
         when /nginx/
           service "nginx" do action :restart; end
         when /apache/
@@ -131,25 +131,25 @@ search(:apps) do |app|
       symlink_before_migrate({ "database.yml" => "config/database.yml" })
 
       before_symlink do
-        if app["database_master_role"]
-          results = search(:node, "run_list:role\\[#{app["database_master_role"][0]}\\]", nil, 0, 1)
+        if app[:database_master_role]
+          results = search(:node, "run_list:role\\[#{app[:database_master_role][0]}\\]", nil, 0, 1)
           rows = results[0]
           if rows.length == 1
             dbm = rows[0]
 
             template "#{@new_resource.shared_path}/database.yml" do
               source "database.yml.erb"
-              owner app["owner"]
-              group app["group"]
+              owner app[:owner]
+              group app[:group]
               mode "644"
               variables(
-                :host => dbm['fqdn'],
-                :databases => app['databases']
+                :host => dbm[:fqdn],
+                :databases => app[:databases]
               )
             end
 
           else
-            Chef::Log.warn("No node with role #{app["database_master_role"][0]}, database.yml not rendered!")
+            Chef::Log.warn("No node with role #{app[:database_master_role][0]}, database.yml not rendered!")
           end
         end
       end
