@@ -13,8 +13,6 @@ search(:apps) do |app|
 
     node.default[:apps][app[:id]][node.app_environment][:run_migrations] = false
 
-    rvm_gemset node[:rvm_passenger][:rvm_ruby]
-    include_recipe 'rvm_passenger::nginx'
 
     ## First, install any application specific packages
     if app[:packages]
@@ -37,6 +35,9 @@ search(:apps) do |app|
     end
 
     ## Then, configure nginx
+    rvm_gemset node[:rvm_passenger][:rvm_ruby]
+    include_recipe 'rvm_passenger::nginx'
+
     template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
       source "rails_nginx_passenger.conf.erb"
       owner "root"
@@ -112,12 +113,12 @@ search(:apps) do |app|
       action (app[:force] || {})[node.app_environment] ? :force_deploy : :deploy
       ssh_wrapper "#{app[:deploy_to]}/deploy-ssh-wrapper" if app[:deploy_key]
 
-      #if app[:migrate][node.app_environment] && node[:apps][app[:id]][node.app_environment][:run_migrations]
-        #migrate true
-        #migration_command "rake db:migrate"
-      #else
-        #migrate false
-      #end
+      if (app[:migrate] || {})[node.app_environment] && node[:apps][app[:id]][node.app_environment][:run_migrations]
+        migrate true
+        migration_command "rake db:migrate"
+      else
+        migrate false
+      end
 
       restart_command do
         case app[:type]
@@ -151,6 +152,17 @@ search(:apps) do |app|
           else
             Chef::Log.warn("No node with role #{app[:database_master_role][0]}, database.yml not rendered!")
           end
+        end
+
+      end
+
+      before_restart do
+        # Bundle
+        rvm_shell "bundle" do
+          cwd "#{app[:deploy_to]}/current"
+          user app[:owner]
+          group app[:group]
+          ruby_string node[:rvm_passenger][:rvm_ruby]
         end
       end
     end
