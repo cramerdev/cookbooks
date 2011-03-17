@@ -1,16 +1,23 @@
 #
 # Cookbook Name:: application
-# Recipe:: rails_nginx_rvm_passenger
+# Recipe:: nanoc3_nginx
 #
 # Copyright 2011, Cramer Development, Inc.
 #
 # All rights reserved.
 #
 
-app = node.run_state[:current_app] 
+%w{ nanoc3 RedCloth coderay }.each do |gem|
+  if node[:recipes].include?("rvm")
+    rvm_gem gem do
+      global true
+    end
+  else
+    gem_package gem
+  end
+end
 
-    node.default[:apps][app[:id]][node.app_environment][:run_migrations] = false
-
+app = node.run_state[:current_app]
 
 ## First, install any application specific packages
 if app[:packages]
@@ -32,23 +39,20 @@ if app[:gems]
   end
 end
 
-## Then, configure nginx
-rvm_gemset node[:rvm_passenger][:rvm_ruby]
-include_recipe 'rvm_passenger::nginx'
-
 template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
-  source "rails_nginx_passenger.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
+  source 'nanoc3_nginx.conf.erb'
+  owner 'root'
+  group 'root'
+  mode 0644
   variables(
     :app => app[:id],
-    :docroot => "#{app[:deploy_to]}/current/public",
+    :docroot => "#{app[:deploy_to]}/current/deploy",
     :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
       "#{app[:id]}.#{node[:domain]}",
     :server_aliases => [ node[:fqdn], app[:id] ],
-    :rails_env => node[:app_environment]
+    :domain_aliases => (app[:domain_aliases] || {})[node[:app_environment]] || []
   )
+  notifies :restart, resources(:service => "nginx")
 end
 
 nginx_site "#{app[:id]}.conf" do
@@ -69,7 +73,7 @@ directory "#{app[:deploy_to]}/shared" do
   recursive true
 end
 
-directory "#{app[:deploy_to]}/shared/log" do
+directory "#{app[:deploy_to]}/shared/output" do
   owner app[:owner]
   group app[:group]
   mode 0755
@@ -110,57 +114,15 @@ deploy_revision app[:id] do
   deploy_to app[:deploy_to]
   action (app[:force] || {})[node.app_environment] ? :force_deploy : :deploy
   ssh_wrapper "#{app[:deploy_to]}/deploy-ssh-wrapper" if app[:deploy_key]
-
-  if (app[:migrate] || {})[node.app_environment] && node[:apps][app[:id]][node.app_environment][:run_migrations]
-    migrate true
-    migration_command "rake db:migrate"
-  else
-    migrate false
-  end
+  migrate false
+  symlink_before_migrate({})
+  symlinks({})
 
   restart_command do
-    case app[:type]
-    when /nginx/
-      service "nginx" do action :restart; end
-    when /apache/
-      service "apache" do action :restart; end
-    end
-  end
-
-  symlink_before_migrate({ "database.yml" => "config/database.yml" })
-
-  before_symlink do
-    if app[:database_master_role]
-      results = search(:node, "run_list:role\\[#{app[:database_master_role][0]}\\]", nil, 0, 1)
-      rows = results[0]
-      if rows.length == 1
-        dbm = rows[0]
-
-        template "#{@new_resource.shared_path}/database.yml" do
-          source "database.yml.erb"
-          owner app[:owner]
-          group app[:group]
-          mode "644"
-          variables(
-            :host => dbm[:fqdn],
-            :databases => app[:databases]
-          )
-        end
-
-      else
-        Chef::Log.warn("No node with role #{app[:database_master_role][0]}, database.yml not rendered!")
-      end
-    end
-
-  end
-
-  before_restart do
-    # Bundle
-    rvm_shell "bundle" do
-      cwd "#{app[:deploy_to]}/current"
+    execute 'nanoc3 compile' do
+      command 'nanoc3 compile && rake deploy:rsync'
       user app[:owner]
-      group app[:group]
-      ruby_string node[:rvm_passenger][:rvm_ruby]
+      cwd "#{app[:deploy_to]}/current"
     end
   end
 end
