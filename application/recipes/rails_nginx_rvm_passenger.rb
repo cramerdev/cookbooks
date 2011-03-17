@@ -37,9 +37,10 @@ rvm_gemset node[:rvm_passenger][:rvm_ruby]
 include_recipe 'rvm_passenger::nginx'
 
 template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
-  source "rails_nginx_passenger.conf.erb"
-  owner "root"
-  group "root"
+  source 'web_app.conf.erb'
+  cookbook app[:cookbook] || app[:id]
+  owner 'root'
+  group 'root'
   mode "0644"
   variables(
     :app => app[:id],
@@ -47,8 +48,10 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
     :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
       "#{app[:id]}.#{node[:domain]}",
     :server_aliases => [ node[:fqdn], app[:id] ],
-    :rails_env => node[:app_environment]
+    :rails_env => node[:app_environment],
+    :ssl => (app[:ssl] || {})[node[:app_environment]] || {}
   )
+  notifies :restart, resources(:service => "nginx")
 end
 
 nginx_site "#{app[:id]}.conf" do
