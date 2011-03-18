@@ -41,21 +41,22 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
   cookbook app[:cookbook] || app[:id]
   owner 'root'
   group 'root'
-  mode "0644"
+  mode 0644
   variables(
-    :app => app[:id],
+    :app => app,
     :docroot => "#{app[:deploy_to]}/current/public",
     :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
       "#{app[:id]}.#{node[:domain]}",
     :server_aliases => [ node[:fqdn], app[:id] ],
     :rails_env => node[:app_environment],
-    :ssl => (app[:ssl] || {})[node[:app_environment]] || {}
+    :ssl => (app[:ssl] || {})[node[:app_environment]] || {},
+    :auth => (app[:auth] || {})[node[:app_environment]] || {}
   )
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, resources(:service => 'nginx')
 end
 
 nginx_site "#{app[:id]}.conf" do
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, resources(:service => 'nginx')
 end
 
 directory app[:deploy_to] do
