@@ -33,7 +33,7 @@ if app[:gems]
 end
 
 ## Then, configure nginx
-rvm_gemset node[:rvm_passenger][:rvm_ruby]
+rvm_gemset app[:rvm_ruby] || node[:rvm_passenger][:rvm_ruby]
 include_recipe 'rvm_passenger::nginx'
 
 template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
@@ -161,10 +161,11 @@ deploy_revision app[:id] do
   before_restart do
     # Bundle
     rvm_shell "bundle" do
+      code 'bundle'
       cwd "#{app[:deploy_to]}/current"
       user app[:owner]
       group app[:group]
-      ruby_string node[:rvm_passenger][:rvm_ruby]
+      ruby_string app[:rvm_ruby] || node[:rvm_passenger][:rvm_ruby]
     end
   end
 end
