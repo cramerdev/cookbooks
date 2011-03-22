@@ -1,0 +1,29 @@
+{
+  "providing": {
+  },
+  "platforms": {
+  },
+  "maintainer": "Cramer Development, Inc.",
+  "replacing": {
+  },
+  "maintainer_email": "sysadmin@cramerdev.com",
+  "description": "Installs/Configures supervisor",
+  "groupings": {
+  },
+  "recommendations": {
+  },
+  "dependencies": {
+  },
+  "version": "0.0.1",
+  "recipes": {
+  },
+  "attributes": {
+  },
+  "suggestions": {
+  },
+  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\n\n= USAGE:\n\n",
+  "name": "supervisor",
+  "conflicting": {
+  },
+  "license": "Apache 2.0"
+}
