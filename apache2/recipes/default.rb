@@ -1,4 +1,4 @@
-#
+#p
 # Cookbook Name:: apache2
 # Recipe:: default
 #
@@ -209,11 +209,7 @@ include_recipe "apache2::mod_log_config" if platform?("centos", "redhat", "suse"
 
 # uncomment to get working example site on centos/redhat/fedora
 apache_site "default" do
-  if node[:apache][:enable_default_site]
-    action :enable
-  else
-    action :disable
-  end
+  enable node[:apache][:enable_default_site]
 end
 
 service "apache2" do

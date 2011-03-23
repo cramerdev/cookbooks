@@ -47,8 +47,8 @@ end
 
 # Remove default site, if enabled
 apache_site "000-default" do  # seems to have this value on Ubuntu default installs?
-  action :disable
+  enable false
 end
 apache_site "default" do  # seems to have this value on Ubuntu default installs?
-  action :disable
+  enable false
 end
