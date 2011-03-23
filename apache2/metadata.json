@@ -1,5 +1,5 @@
 {
-  "suggestions": {
+  "providing": {
   },
   "platforms": {
     "debian": [
@@ -15,10 +15,18 @@
 
     ]
   },
-  "long_description": "= DESCRIPTION:\n\nComplete Debian/Ubuntu style Apache2 configuration.\n\n= REQUIREMENTS:\n\nDebian or Ubuntu preferred.\n\nRed Hat/CentOS and Fedora can be used but will be converted to a Debian/Ubuntu style Apache as it's far easier to manage with chef. \n\n= ATTRIBUTES:\n\nThe file attributes/apache.rb contains the following attribute types:\n\n* platform specific locations and settings.\n* general settings\n* prefork attributes\n* worker attributes\n\nGeneral settings and prefork/worker attributes are tunable.\n\n= USAGE:\n\nInclude the apache2 recipe to install Apache2 and get 'sane' default settings. Configuration is modularized through Apache vhost sites a la Debian style configuration.\n\nFor Red Hat, CentOS and Fedora you should first disable selinux as it's not supported (yet), then remove the stock httpd and all it's dependencies prior to attempting to use this recipe. Many packages in these distributions drop conflicting configs into conf.d, all of which haven't been accounted for yet. Starting from scratch will also make it far easier to debug.\n\n== Defines:\n\n* apache_module: sets up an Apache module.\n* apache_conf: sets up a config file for an apache module.\n* apache_site: sets up a vhost site. The conf file must be available.\n* web_app: copies the template for a web app and enables it as a site via apache_site.\n\n== Web Apps:\n\nVarious applications that can be set up with Apache as the front end, such as PHP, Django, Rails and others can use the web_app define to set up the template and the Apache site. The define is kind of dumb, so the template needs have the application implementation settings, since we don't know what your app is or what is needed from Apache.\n\nWe only prototype one parameter for the web_app define, \"template\". This is used to specify the name of the template to use in the current cookbook. When you use web_app, you can set up any parameters you want to use in your template. They will get passed to the template through the params hash. For example, the sample web_app.conf.erb template in this cookbook makes use of these.\n\n* docroot\n* server_name\n* server_aliases\n\nThese are available as @params[:docroot], @params[:server_name], @params[:server_aliases] within the template. \n\nIf 'cookbook' and 'template' are not specified, the current cookbook's templates/default/web_app.conf.erb will be used. If this template is not suitable for your application, copy it to your cookbook and customize as needed.\n\n== God Monitor:\n\nThere's a new recipe, apache2::god_monitor. You will need to make sure to include the 'god' recipe before using the apache2::god_monitor recipe in your cookbook.\n\n== OpenID Auth\n\nInstalls the mod_auth_openid module from source. Specify an array of OpenIDs that are allowed to authenticate with the attribute apache[:allowed_openids]. Use the following in a vhost to protect with OpenID authentication:\n\n    AuthOpenIDEnabled On\n    AuthOpenIDDBLocation /var/cache/apache2/mod_auth_openid.db\n    AuthOpenIDUserProgram /usr/local/bin/mod_auth_openid.rb\n\nChange the DBLocation as appropriate for your platform. You'll need to change the file in the recipe to match. The UserProgram is optional if you don't want to limit access by certain OpenIDs.\n\n= LICENSE & AUTHOR:\n\nAuthor:: Joshua Timberman (<joshua@opscode.com>)\nCopyright:: 2009, Opscode, Inc\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n",
-  "conflicting": {
+  "maintainer": "Opscode, Inc.",
+  "replacing": {
   },
+  "maintainer_email": "cookbooks@opscode.com",
   "description": "Installs and configures all aspects of apache2 using Debian style symlinks with helper definitions",
+  "groupings": {
+  },
+  "recommendations": {
+  },
+  "dependencies": {
+  },
+  "version": "0.12.3",
   "recipes": {
     "apache2::mod_dav": "Apache module 'dav'",
     "apache2::mod_proxy_ajp": "Apache module 'proxy_ajp'",
@@ -57,12 +65,6 @@
     "apache2::mod_dir": "Apache module 'dir' with config file",
     "apache2::mod_authz_default": "Apache module 'authz_default'"
   },
-  "providing": {
-  },
-  "dependencies": {
-  },
-  "maintainer": "Opscode, Inc.",
-  "version": "0.12.3",
   "attributes": {
     "apache/traceenable": {
       "required": "optional",
@@ -75,8 +77,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Trace Enable",
-      "description": "Determine behavior of TRACE requests"
+      "description": "Determine behavior of TRACE requests",
+      "display_name": "Apache Trace Enable"
     },
     "apache/serversignature": {
       "required": "optional",
@@ -89,8 +91,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Server Signature",
-      "description": "Configure footer on server-generated documents"
+      "description": "Configure footer on server-generated documents",
+      "display_name": "Apache Server Signature"
     },
     "apache/contact": {
       "required": "optional",
@@ -103,8 +105,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Contact",
-      "description": "Email address of webmaster"
+      "description": "Email address of webmaster",
+      "display_name": "Apache Contact"
     },
     "apache/icondir": {
       "required": "optional",
@@ -117,8 +119,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Icondir",
-      "description": "Directory location for icons"
+      "description": "Directory location for icons",
+      "display_name": "Apache Icondir"
     },
     "apache/user": {
       "required": "optional",
@@ -131,8 +133,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache User",
-      "description": "User Apache runs as"
+      "description": "User Apache runs as",
+      "display_name": "Apache User"
     },
     "apache/worker/threadsperchild": {
       "required": "optional",
@@ -145,8 +147,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Worker MPM ThreadsPerChild",
-      "description": "Constant number of worker threads in each server process"
+      "description": "Constant number of worker threads in each server process",
+      "display_name": "Apache Worker MPM ThreadsPerChild"
     },
     "apache/worker/maxclients": {
       "required": "optional",
@@ -159,8 +161,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Worker MPM MaxClients",
-      "description": "Maximum number of simultaneous connections"
+      "description": "Maximum number of simultaneous connections",
+      "display_name": "Apache Worker MPM MaxClients"
     },
     "apache/worker": {
       "required": "optional",
@@ -172,8 +174,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Worker",
-      "description": "Hash of Apache prefork tuning attributes."
+      "description": "Hash of Apache prefork tuning attributes.",
+      "display_name": "Apache Worker"
     },
     "apache/keepaliverequests": {
       "required": "optional",
@@ -186,8 +188,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Keepalive Requests",
-      "description": "Number of requests allowed on a persistent connection"
+      "description": "Number of requests allowed on a persistent connection",
+      "display_name": "Apache Keepalive Requests"
     },
     "apache/timeout": {
       "required": "optional",
@@ -200,8 +202,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Timeout",
-      "description": "Connection timeout value"
+      "description": "Connection timeout value",
+      "display_name": "Apache Timeout"
     },
     "apache/worker/maxrequestsperchild": {
       "required": "optional",
@@ -214,8 +216,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Worker MPM MaxRequestsPerChild",
-      "description": "Maximum number of request a child process will handle"
+      "description": "Maximum number of request a child process will handle",
+      "display_name": "Apache Worker MPM MaxRequestsPerChild"
     },
     "apache/dir": {
       "required": "optional",
@@ -228,8 +230,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Directory",
-      "description": "Location for Apache configuration"
+      "description": "Location for Apache configuration",
+      "display_name": "Apache Directory"
     },
     "apache/prefork/serverlimit": {
       "required": "optional",
@@ -242,8 +244,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Prefork MPM ServerLimit",
-      "description": "Upper limit on configurable server processes"
+      "description": "Upper limit on configurable server processes",
+      "display_name": "Apache Prefork MPM ServerLimit"
     },
     "apache/prefork/minspareservers": {
       "required": "optional",
@@ -256,8 +258,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Prefork MPM MinSpareServers",
-      "description": "Minimum number of spare server processes"
+      "description": "Minimum number of spare server processes",
+      "display_name": "Apache Prefork MPM MinSpareServers"
     },
     "apache/allowed_openids": {
       "required": "optional",
@@ -270,8 +272,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Allowed OpenIDs",
-      "description": "Array of OpenIDs allowed to authenticate"
+      "description": "Array of OpenIDs allowed to authenticate",
+      "display_name": "Apache Allowed OpenIDs"
     },
     "apache/binary": {
       "required": "optional",
@@ -284,8 +286,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Binary",
-      "description": "Apache server daemon program"
+      "description": "Apache server daemon program",
+      "display_name": "Apache Binary"
     },
     "apache/prefork/startservers": {
       "required": "optional",
@@ -298,8 +300,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Prefork MPM StartServers",
-      "description": "Number of MPM servers to start"
+      "description": "Number of MPM servers to start",
+      "display_name": "Apache Prefork MPM StartServers"
     },
     "apache/listen_ports": {
       "required": "optional",
@@ -315,8 +317,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Listen Ports",
-      "description": "Ports that Apache should listen on"
+      "description": "Ports that Apache should listen on",
+      "display_name": "Apache Listen Ports"
     },
     "apache/prefork/maxrequestsperchild": {
       "required": "optional",
@@ -329,8 +331,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Prefork MPM MaxRequestsPerChild",
-      "description": "Maximum number of request a child process will handle"
+      "description": "Maximum number of request a child process will handle",
+      "display_name": "Apache Prefork MPM MaxRequestsPerChild"
     },
     "apache/keepalivetimeout": {
       "required": "optional",
@@ -343,8 +345,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Keepalive Timeout",
-      "description": "Time to wait for requests on persistent connection"
+      "description": "Time to wait for requests on persistent connection",
+      "display_name": "Apache Keepalive Timeout"
     },
     "apache/keepalive": {
       "required": "optional",
@@ -357,8 +359,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Keepalive",
-      "description": "HTTP persistent connections"
+      "description": "HTTP persistent connections",
+      "display_name": "Apache Keepalive"
     },
     "apache": {
       "required": "optional",
@@ -370,8 +372,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Hash",
-      "description": "Hash of Apache attributes"
+      "description": "Hash of Apache attributes",
+      "display_name": "Apache Hash"
     },
     "apache/worker/maxsparethreads": {
       "required": "optional",
@@ -384,8 +386,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Worker MPM MaxSpareThreads",
-      "description": "Maximum number of spare worker threads"
+      "description": "Maximum number of spare worker threads",
+      "display_name": "Apache Worker MPM MaxSpareThreads"
     },
     "apache/worker/startservers": {
       "required": "optional",
@@ -398,8 +400,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Worker MPM StartServers",
-      "description": "Initial number of server processes to start"
+      "description": "Initial number of server processes to start",
+      "display_name": "Apache Worker MPM StartServers"
     },
     "apache/prefork/maxclients": {
       "required": "optional",
@@ -412,8 +414,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Prefork MPM MaxClients",
-      "description": "Maximum number of simultaneous connections"
+      "description": "Maximum number of simultaneous connections",
+      "display_name": "Apache Prefork MPM MaxClients"
     },
     "apache/prefork": {
       "required": "optional",
@@ -425,8 +427,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Prefork",
-      "description": "Hash of Apache prefork tuning attributes."
+      "description": "Hash of Apache prefork tuning attributes.",
+      "display_name": "Apache Prefork"
     },
     "apache/servertokens": {
       "required": "optional",
@@ -439,8 +441,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Server Tokens",
-      "description": "Server response header"
+      "description": "Server response header",
+      "display_name": "Apache Server Tokens"
     },
     "apache/log_dir": {
       "required": "optional",
@@ -453,8 +455,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Log Directory",
-      "description": "Location for Apache logs"
+      "description": "Location for Apache logs",
+      "display_name": "Apache Log Directory"
     },
     "apache/worker/minsparethreads": {
       "required": "optional",
@@ -467,8 +469,8 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Worker MPM MinSpareThreads",
-      "description": "Minimum number of spare worker threads"
+      "description": "Minimum number of spare worker threads",
+      "display_name": "Apache Worker MPM MinSpareThreads"
     },
     "apache/prefork/maxspareservers": {
       "required": "optional",
@@ -481,17 +483,15 @@
       "recipes": [
 
       ],
-      "display_name": "Apache Prefork MPM MaxSpareServers",
-      "description": "Maximum number of spare server processes"
+      "description": "Maximum number of spare server processes",
+      "display_name": "Apache Prefork MPM MaxSpareServers"
     }
   },
-  "replacing": {
+  "suggestions": {
   },
-  "maintainer_email": "cookbooks@opscode.com",
-  "groupings": {
-  },
+  "long_description": "= DESCRIPTION:\n\nComplete Debian/Ubuntu style Apache2 configuration.\n\n= REQUIREMENTS:\n\nDebian or Ubuntu preferred.\n\nRed Hat/CentOS and Fedora can be used but will be converted to a Debian/Ubuntu style Apache as it's far easier to manage with chef. \n\n= ATTRIBUTES:\n\nThe file attributes/apache.rb contains the following attribute types:\n\n* platform specific locations and settings.\n* general settings\n* prefork attributes\n* worker attributes\n\nGeneral settings and prefork/worker attributes are tunable.\n\n= USAGE:\n\nInclude the apache2 recipe to install Apache2 and get 'sane' default settings. Configuration is modularized through Apache vhost sites a la Debian style configuration.\n\nFor Red Hat, CentOS and Fedora you should first disable selinux as it's not supported (yet), then remove the stock httpd and all it's dependencies prior to attempting to use this recipe. Many packages in these distributions drop conflicting configs into conf.d, all of which haven't been accounted for yet. Starting from scratch will also make it far easier to debug.\n\n== Defines:\n\n* apache_module: sets up an Apache module.\n* apache_conf: sets up a config file for an apache module.\n* apache_site: sets up a vhost site. The conf file must be available.\n* web_app: copies the template for a web app and enables it as a site via apache_site.\n\n== Web Apps:\n\nVarious applications that can be set up with Apache as the front end, such as PHP, Django, Rails and others can use the web_app define to set up the template and the Apache site. The define is kind of dumb, so the template needs have the application implementation settings, since we don't know what your app is or what is needed from Apache.\n\nWe only prototype one parameter for the web_app define, \"template\". This is used to specify the name of the template to use in the current cookbook. When you use web_app, you can set up any parameters you want to use in your template. They will get passed to the template through the params hash. For example, the sample web_app.conf.erb template in this cookbook makes use of these.\n\n* docroot\n* server_name\n* server_aliases\n\nThese are available as @params[:docroot], @params[:server_name], @params[:server_aliases] within the template. \n\nIf 'cookbook' and 'template' are not specified, the current cookbook's templates/default/web_app.conf.erb will be used. If this template is not suitable for your application, copy it to your cookbook and customize as needed.\n\n== God Monitor:\n\nThere's a new recipe, apache2::god_monitor. You will need to make sure to include the 'god' recipe before using the apache2::god_monitor recipe in your cookbook.\n\n== OpenID Auth\n\nInstalls the mod_auth_openid module from source. Specify an array of OpenIDs that are allowed to authenticate with the attribute apache[:allowed_openids]. Use the following in a vhost to protect with OpenID authentication:\n\n    AuthOpenIDEnabled On\n    AuthOpenIDDBLocation /var/cache/apache2/mod_auth_openid.db\n    AuthOpenIDUserProgram /usr/local/bin/mod_auth_openid.rb\n\nChange the DBLocation as appropriate for your platform. You'll need to change the file in the recipe to match. The UserProgram is optional if you don't want to limit access by certain OpenIDs.\n\n= LICENSE & AUTHOR:\n\nAuthor:: Joshua Timberman (<joshua@opscode.com>)\nCopyright:: 2009, Opscode, Inc\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n",
   "name": "apache2",
-  "recommendations": {
+  "conflicting": {
   },
   "license": "Apache 2.0"
 }

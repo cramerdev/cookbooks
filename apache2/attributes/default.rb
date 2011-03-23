@@ -51,6 +51,7 @@ default[:apache][:timeout] = 300
 default[:apache][:keepalive] = "On"
 default[:apache][:keepaliverequests] = 100
 default[:apache][:keepalivetimeout] = 5
+default[:apache][:enable_default_site] = true
 
 # Security
 default[:apache][:servertokens] = "Prod"
