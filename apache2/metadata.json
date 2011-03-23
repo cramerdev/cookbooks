@@ -42,6 +42,7 @@
     "apache2::mod_auth_basic": "Apache module 'auth_basic'",
     "apache2::mod_rewrite": "Apache module 'rewrite'",
     "apache2::mod_dav_svn": "Apache module 'dav_svn'",
+    "apache2::mod_cloudflare": "Apache module 'cloudflare'",
     "apache2::mod_autoindex": "Apache module 'autoindex' with config file",
     "apache2::mod_authz_host": "Apache module 'authz_host'",
     "apache2::mod_headers": "Apache module 'headers'",
