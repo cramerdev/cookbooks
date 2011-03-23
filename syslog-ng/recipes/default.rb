@@ -19,12 +19,14 @@
 
 package 'syslog-ng'
 
+log_server_role = (node[:syslog] || {})[:log_server_role] || 'log_server'
+
 template '/etc/syslog-ng/syslog-ng.conf' do
   source 'syslog-ng.conf.erb'
   owner 'root'
   group 'root'
   mode 0644
-  variables :log_servers => search(:node, 'role:log_server')
+  variables :log_servers => search(:node, "role:#{log_server_role}")
   notifies :restart, 'service[syslog-ng]'
 end
 
