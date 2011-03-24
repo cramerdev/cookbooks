@@ -123,11 +123,9 @@ deploy_revision app[:id] do
   end
 
   restart_command do
-    case app[:type]
-    when /nginx/
-      service "nginx" do action :restart; end
-    when /apache/
-      service "apache" do action :restart; end
+    execute 'restart passenger' do
+      user app[:owner]
+      code "touch #{deploy_to}/current/tmp/restart.txt"
     end
   end
 
