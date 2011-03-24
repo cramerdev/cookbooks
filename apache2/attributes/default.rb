@@ -52,6 +52,7 @@ default[:apache][:keepalive] = "On"
 default[:apache][:keepaliverequests] = 100
 default[:apache][:keepalivetimeout] = 5
 default[:apache][:enable_default_site] = true
+default[:apache][:enable_cloudflare] = false
 
 # Security
 default[:apache][:servertokens] = "Prod"

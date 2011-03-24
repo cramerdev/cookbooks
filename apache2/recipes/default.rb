@@ -195,6 +195,7 @@ include_recipe "apache2::mod_authz_groupfile"
 include_recipe "apache2::mod_authz_host"
 include_recipe "apache2::mod_authz_user"
 include_recipe "apache2::mod_autoindex"
+include_recipe "apache2::mod_cloudflare" if node[:apache][:enable_cloudflare]
 include_recipe "apache2::mod_deflate"
 include_recipe "apache2::mod_dir"
 include_recipe "apache2::mod_env"

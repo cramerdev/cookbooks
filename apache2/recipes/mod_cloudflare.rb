@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+installed_module_path = '/usr/lib/apache2/modules/mod_cloudflare.so'
+
 remote_file '/usr/src/mod_cloudflare.c' do
   source 'https://github.com/cloudflare/CloudFlare-Tools/raw/master/mod_cloudflare.c'
   owner 'root'
@@ -28,7 +30,15 @@ execute 'build cloudflare module' do
   user 'root'
   cwd '/usr/src'
   command 'apxs2 -a -i -c mod_cloudflare.c'
-  creates '/usr/lib/apache2/modules/mod_cloudflare.so'
+  creates installed_module_path
+end
+
+template "#{node[:apache][:dir]}/mods-available/cloudflare.load" do
+  owner 'root'
+  group 'root'
+  mode 0644
+  source 'mods/load.erb'
+  variables :name => 'cloudflare', :path => installed_module_path
 end
 
 apache_module 'cloudflare'
