@@ -26,12 +26,13 @@
   "version": "0.7.0",
   "recipes": {
     "application::wordpress": "Sets up a deployed WordPress application with Apache2 as the web server",
+    "application::apache2_proxied": "Installs a vhost for an app that will run on a port and be reverse-proxied through Apache",
     "application::unicorn": "Sets up the deployed Rails application with Unicorn as the web server",
     "application::passenger-nginx": "Installs Ruby Enterprise with Passenger under Nginx",
     "application": "Loads application databags and selects recipes to use",
-    "application::rails_nginx_ree_passenger": "Deprecated recipe that deployed a rails application under Ruby Enterprise Edition, Passenger and Nginx",
     "application::rails": "Deploys a Rails application specified in a data bag with the deploy_revision resource",
-    "application::passenger_apache2": "Sets up a deployed Rails application as a Passenger virtual host in Apache2"
+    "application::passenger_apache2": "Sets up a deployed Rails application as a Passenger virtual host in Apache2",
+    "application::rails_nginx_rvm_passenger": "Deploy a rails application with RVM, Passenger and Nginx"
   },
   "attributes": {
   },
