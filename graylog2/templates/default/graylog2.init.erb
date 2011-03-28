@@ -25,17 +25,17 @@ set -e
 case "$1" in
   start)
         echo -n "Starting $DESC: "
-        $BINDIR/graylog2ctl start
+        cd $BINDER && $BINDIR/graylog2ctl start
         echo "...started."
         ;;
   stop)
         echo -n "Stopping $DESC: "
-        $BINDIR/graylog2ctl stop
+        cd $BINDER && $BINDIR/graylog2ctl stop
         echo "...stopped."
         ;;
   restart)
         echo -n "Restarting $DESC: "
-        $BINDIR/graylog2ctl restart
+        cd $BINDER && $BINDIR/graylog2ctl restart
         echo "...restarted."
         ;;
   *)
