@@ -50,7 +50,5 @@ template "#{node[:apache][:dir]}/sites-available/#{app[:id]}.conf" do
   notifies :restart, 'service[apache2]'
 end
 
-apache_site "#{app[:id]}.conf" do
-  notifies :restart, 'service[apache2]'
-end
+apache_site "#{app[:id]}.conf"
 
