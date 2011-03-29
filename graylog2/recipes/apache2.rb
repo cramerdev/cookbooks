@@ -38,6 +38,7 @@ template "apache-vhost-conf" do
   owner "root"
   group "root"
   mode 0644
+  notifies :restart, 'service[apache2]'
 end
 
 # Add site using apache_site def
