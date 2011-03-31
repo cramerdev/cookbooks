@@ -125,7 +125,7 @@ deploy_revision app[:id] do
   restart_command do
     execute 'restart passenger' do
       user app[:owner]
-      code "touch #{deploy_to}/current/tmp/restart.txt"
+      code "touch #{app[:deploy_to]}/current/tmp/restart.txt"
     end
   end
 
