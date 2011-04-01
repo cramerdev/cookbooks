@@ -50,6 +50,24 @@ end
 
 o.run_action(:install)
 
-gem_package "mysql" do
-  action :install
+r = gem_package "mysql" do
+  action :nothing
+end
+
+case node[:node]
+when "centos",
+  if node[:platform_version].to_f >= 5.0
+    r.run_action(:install)
+  else
+    package "ruby-mysql" do
+      action :install
+    end
+  end
+when "redhat", "suse", "fedora"
+  package "ruby-mysql" do
+    action :install
+  end
+
+else
+  r.run_action(:install)
 end

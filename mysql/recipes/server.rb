@@ -61,8 +61,7 @@ service "mysql" do
     start_command "start mysql"
   end
   supports :status => true, :restart => true, :reload => true
-  enabled true
-  action :start
+  action :nothing
 end
 
 template value_for_platform([ "centos", "redhat", "suse" , "fedora" ] => {"default" => "/etc/my.cnf"}, "default" => "/etc/mysql/my.cnf") do
@@ -82,6 +81,16 @@ unless Chef::Config[:solo]
   end
 end
 
+# set the root password on platforms 
+# that don't support pre-seeding
+unless %w{debian ubuntu}.include?(node[:platform])
+  execute "assign-root-password" do
+    command "/usr/bin/mysqladmin -u root password #{node[:mysql][:server_root_password]}"
+    action :run
+    only_if "/usr/bin/mysql -u root -e 'show databases;'"
+  end
+end
+
 grants_path = value_for_platform(
   ["centos", "redhat", "suse", "fedora" ] => {
     "default" => "/etc/mysql_grants.sql"
@@ -89,13 +98,18 @@ grants_path = value_for_platform(
   "default" => "/etc/mysql/grants.sql"
 )
 
-template "/etc/mysql/grants.sql" do
-  path grants_path
-  source "grants.sql.erb"
-  owner "root"
-  group "root"
-  mode "0600"
-  action :create_if_missing
+begin
+  t = resources(:template => "/etc/mysql/grants.sql")
+rescue
+  Chef::Log.warn("Could not find previously defined grants.sql resource")
+  t = template "/etc/mysql/grants.sql" do
+    path grants_path
+    source "grants.sql.erb"
+    owner "root"
+    group "root"
+    mode "0600"
+    action :create
+  end
 end
 
 execute "mysql-install-privileges" do
