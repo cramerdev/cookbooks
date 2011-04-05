@@ -7,7 +7,7 @@
 # All rights reserved.
 #
 
-%w{ nanoc3 RedCloth coderay }.each do |gem|
+%w{ nanoc3 RedCloth coderay kramdown }.each do |gem|
   if node[:recipes].include?("rvm")
     rvm_gem gem do
       global true
