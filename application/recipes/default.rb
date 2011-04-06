@@ -20,8 +20,12 @@
 search(:apps) do |app|
   (app["server_roles"] & node.run_list.roles).each do |app_role|
     app["type"][app_role].each do |thing|
+      thing = "application::#{thing}"
       node.run_state[:current_app] = app
-      include_recipe "application::#{thing}"
+      # This is a workaround so the include_recipe works more than once
+      # See http://tickets.opscode.com/browse/CHEF-1406
+      node.run_state[:seen_recipes].delete(thing)
+      include_recipe thing
     end
   end
 end
