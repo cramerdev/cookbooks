@@ -73,7 +73,7 @@ directory "#{app['deploy_to']}/shared" do
   recursive true
 end
 
-%w{ log pids system }.each do |dir|
+%w{ log pids system vendor_bundle }.each do |dir|
 
   directory "#{app['deploy_to']}/shared/#{dir}" do
     owner app['owner']
@@ -171,7 +171,12 @@ deploy_revision app['id'] do
   ssh_wrapper "#{app['deploy_to']}/deploy-ssh-wrapper" if app['deploy_key']
 
   before_migrate do
-    execute "bundle install" do
+    # Bundle
+    link "#{release_path}/vendor/bundle" do
+      to "#{app[:deploy_to]}/shared/vendor_bundle"
+    end
+    common_groups = %w{development test cucumber staging production}
+    execute "bundle install --deployment --without #{(common_groups -([node.app_environment])).join(' ')}" do
       cwd release_path
     end
 
@@ -190,7 +195,7 @@ deploy_revision app['id'] do
   end
 
   symlink_before_migrate({
-    "database.yml" => "config/database.yml",
+    "database.yml"  => "config/database.yml",
     "memcached.yml" => "config/memcached.yml"
   })
 
