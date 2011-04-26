@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: supervisor
-# Recipe:: default
+# Definition:: supervisor_service
 #
 # Copyright 2011, Cramer Development, Inc.
 #
@@ -17,24 +17,16 @@
 # limitations under the License.
 #
 
-package 'supervisor'
+define :supervisor_service, :action => :enable do
+  include_recipe 'supervisor'
 
-directory '/tmp/supervisor' do
-  owner 'root'
-  group 'root'
-  mode 0777
+  template "/etc/supervisor/conf.d/#{params[:name]}.conf" do
+    cookbook 'supervisor'
+    source 'supervisor_service.conf.erb'
+    variables params
+    owner 'root'
+    group 'root'
+    mode 0644
+    notifies :restart, 'service[supervisor]'
+  end
 end
-
-service 'supervisor' do
-  ignore_failure true
-  action [:enable, :start]
-end
-
-template '/etc/supervisor/supervisord.conf' do
-  source 'supervisord.conf.erb'
-  owner 'root'
-  group 'root'
-  mode 0644
-  notifies :restart, 'service[supervisor]'
-end
-
