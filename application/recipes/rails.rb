@@ -172,14 +172,21 @@ deploy_revision app['id'] do
 
   before_migrate do
     # Bundle
+
+    # type can be 'deployment' or 'system'
+    bundle_type = (app[:bundle] || {})[node.app_environment] || 'system'
+
     link "#{release_path}/vendor/bundle" do
       to "#{app[:deploy_to]}/shared/vendor_bundle"
+      only_if bundle_type == 'deployment'
     end
+
     common_groups = %w{development test cucumber staging production}
-    execute "bundle install --deployment --without #{(common_groups -([node.app_environment])).join(' ')}" do
+    execute "bundle install --#{bundle_type} --without #{(common_groups -([node.app_environment])).join(' ')}" do
       cwd release_path
     end
 
+    # Set up database.yml for migration
     if node.app_environment && app['databases'].has_key?(node.app_environment)
       # chef runs before_migrate, then symlink_before_migrate symlinks, then migrations,
       # yet our before_migrate needs database.yml to exist (and must complete before
