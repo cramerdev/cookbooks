@@ -17,8 +17,19 @@
 # limitations under the License.
 #
 
-define :supervisor_service, :action => :enable do
+define :supervisor_service,
+       :environment => {},
+       :action => :enable do
+
+  raise 'command is required' if params[:command].nil?
+
   include_recipe 'supervisor'
+
+  if params[:environment].is_a?(Hash)
+    params[:environment] = params[:environment].map do |k, v|
+      "#{k}=#{v}"
+    end.join(',')
+  end
 
   template "/etc/supervisor/conf.d/#{params[:name]}.conf" do
     cookbook 'supervisor'
@@ -27,6 +38,5 @@ define :supervisor_service, :action => :enable do
     owner 'root'
     group 'root'
     mode 0644
-    notifies :restart, 'service[supervisor]'
   end
 end
