@@ -32,7 +32,7 @@ gem_package "rake" do
 end
 
 # Install required apt packages
-%w{ build-essential make rrdtool rake libopenssl-ruby libmysqlclient-dev ruby-dev postfix mysql-server }.each do |pkg|
+%w{ build-essential make rrdtool libopenssl-ruby libmysqlclient-dev ruby-dev postfix mysql-server }.each do |pkg|
   package pkg do
     action :install
   end
