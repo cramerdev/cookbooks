@@ -25,6 +25,12 @@ define :supervisor_service,
 
   include_recipe 'supervisor'
 
+  execute 'update supervisor configuration' do
+    command "supervisorctl update #{params[:name]}"
+    action :nothing
+  end
+
+  # Convert environment hash to A=1,B=2,C=3
   if params[:environment].is_a?(Hash)
     params[:environment] = params[:environment].map do |k, v|
       "#{k}=#{v}"
@@ -38,5 +44,6 @@ define :supervisor_service,
     owner 'root'
     group 'root'
     mode 0644
+    notifies :run, resources(:execute => 'update supervisor configuration')
   end
 end

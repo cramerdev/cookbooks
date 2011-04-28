@@ -1,3 +1,26 @@
 [program:<%= @name %>]
 command=<%= @command %>
+process_name=%(program_name)s
+numprocs=1
+directory=/tmp
+umask=022
+priority=999
+autostart=true
+autorestart=true
+startsecs=15
+startretries=6
+exitcodes=0,2
+stopsignal=TERM
+stopwaitsecs=10
+user=root
 environment=<%= @environment %>
+redirect_stderr=false
+stdout_logfile=/var/log/supervisor/<%= @name %>-stdout.log
+stdout_logfile_maxbytes=1MB
+stdout_logfile_backups=10
+stdout_capture_maxbytes=1MB
+stderr_logfile=/var/log/supervisor/<%= @name %>-stderr.log
+stderr_logfile_maxbytes=1MB
+stderr_logfile_backups=10
+stderr_capture_maxbytes=1MB
+serverurl=AUTO

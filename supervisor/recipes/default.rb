@@ -19,12 +19,6 @@
 
 package 'supervisor'
 
-directory '/tmp/supervisor' do
-  owner 'root'
-  group 'root'
-  mode 0777
-end
-
 service 'supervisor' do
   ignore_failure true
   action [:enable, :start]
