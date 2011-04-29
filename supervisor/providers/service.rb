@@ -22,27 +22,27 @@ include Chef::Mixin::Command
 sc = 'supervisorctl'
 
 action :add do
-  unless @s.enabled
-    raise "command required" if new_resource.command.nil?
+  raise "command required" if new_resource.command.nil?
 
-    # Convert environment hash to A=1,B=2,C=3
-    env = new_resource.environment
-    if env.kind_of?(Hash)
-      new_resource.environment(env.map { |k, v| "#{k}=#{v}" }.join(','))
-    end
-
-    execute "supervisorctl update" do
-      action :nothing
-    end
-    template "/etc/supervisor/conf.d/#{new_resource.name}.conf" do
-      source 'service.conf.erb'
-      # FIXME
-      variables new_resource.to_hash
-      mode '644'
-      notifies :run, resources('execute[supervisorctl update]')
-    end
-    @s.enabled(true)
+  # Convert environment hash to A=1,B=2,C=3
+  env = new_resource.environment
+  if env.kind_of?(Hash)
+    new_resource.environment(env.map { |k, v| "#{k}=#{v}" }.join(','))
   end
+
+  # Get the merged attributes
+  attrs = resource_attributes
+
+  execute "supervisorctl update" do
+    action :nothing
+  end
+  template "/etc/supervisor/conf.d/#{new_resource.name}.conf" do
+    source 'service.conf.erb'
+    mode '644'
+    variables attrs
+    notifies :run, resources('execute[supervisorctl update]')
+  end
+  @s.enabled(true)
 end
 
 action :remove do
@@ -95,4 +95,25 @@ def load_current_resource
   status = output_of_command("supervisorctl status #{n}", {})[1]
   @s.enabled(status != "No such process #{n}")
   @s.running(status.split(/\s+/)[1] == 'RUNNING')
+end
+
+private
+
+# This is a hack. I for the life of me can't figure out how to get the default
+# attributes from the resource, so this just lists them all out, puts their
+# values in a hash, and merges them with the actual given values.
+def resource_attributes
+  attrs = %w{ command process_name numprocs numprocs_start priority autostart
+              autorestart startsecs startretries exitcodes stopsignal
+              stopwaitsecs user redirect_stderr stdout_logfile
+              stdout_logfile_maxbytes stdout_logfile_backups
+              stdout_capture_maxbytes stdout_events_enabled stderr_logfile
+              stderr_logfile_maxbytes stderr_logfile_backups
+              stderr_capture_maxbytes stderr_events_enabled environment
+              directory umask serverurl }
+  h = {}
+  attrs.each do |attr|
+    h[attr.to_sym] = new_resource.send(attr)
+  end
+  h.merge(new_resource.to_hash)
 end
