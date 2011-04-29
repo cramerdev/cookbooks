@@ -1,29 +1,29 @@
 {
-  "recommendations": {
-  },
-  "platforms": {
-  },
-  "suggestions": {
-  },
-  "description": "Installs/Configures supervisor",
-  "conflicting": {
-  },
-  "dependencies": {
-  },
-  "version": "0.0.1",
   "attributes": {
   },
-  "providing": {
-  },
-  "maintainer": "Cramer Development, Inc.",
-  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\n\n= USAGE:\n\n",
   "replacing": {
   },
-  "name": "supervisor",
-  "recipes": {
-  },
+  "license": "Apache 2.0",
   "maintainer_email": "sysadmin@cramerdev.com",
   "groupings": {
   },
-  "license": "Apache 2.0"
+  "recommendations": {
+  },
+  "description": "Installs/Configures supervisor",
+  "suggestions": {
+  },
+  "version": "0.0.1",
+  "dependencies": {
+  },
+  "conflicting": {
+  },
+  "name": "supervisor",
+  "providing": {
+  },
+  "recipes": {
+  },
+  "platforms": {
+  },
+  "maintainer": "Cramer Development, Inc.",
+  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\n\n= USAGE:\n\n"
 }

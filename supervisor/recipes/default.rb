@@ -28,7 +28,7 @@ template '/etc/supervisor/supervisord.conf' do
   source 'supervisord.conf.erb'
   owner 'root'
   group 'root'
-  mode 0644
+  mode '644'
   notifies :restart, 'service[supervisor]'
 end
 

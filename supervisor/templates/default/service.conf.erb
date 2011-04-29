@@ -1,0 +1,30 @@
+[program:<%= @name %>]
+command=<%= @command %>
+process_name=<%= @process_name %>
+numprocs=<%= @numprocs %>
+numprocs_start=<%= @numprocs_start %>
+priority=<%= @priority %>
+directory=<%= @process_name %>
+autostart=<%= @autostart %>
+autorestart=<%= @autorestart %>
+startsecs=<%= @startsecs %>
+startretries=<%= @startretries %>
+exitcodes=<%= @exitcodes %>
+stopsignal=<%= @stopsignal %>
+stopwaitsecs=<%= @stopwaitsecs %>
+<%= "user=#{@user}" if @user %>
+redirect_stderr=<%= @redirect_stderr %>
+stdout_logfile=<%= @stdout_logfile %>
+stdout_logfile_maxbytes=<%= @stdout_logfile_maxbytes %>
+stdout_logfile_backups=<%= @stdout_logfile_backups %>
+stdout_capture_maxbytes=<%= @stdout_capture_maxbytes %>
+stdout_events_enabled=<%= @stdout_events_enabled %>
+stderr_logfile=<%= @stderr_logfile %>
+stderr_logfile_maxbytes=<%= @stderr_logfile_maxbytes %>
+stderr_logfile_backups=<%= @stderr_logfile_backups %>
+stderr_capture_maxbytes=<%= @stderr_capture_maxbytes %>
+stderr_events_enabled=<%= @stderr_events_enabled %>
+<%= "environment=#{@environment}" if @environment %>
+<%= "directory=#{@directory}" if @directory %>
+<%= "umask=#{@umask}" if @umask %>
+serverurl=<%= @serverurl %>
