@@ -21,29 +21,38 @@ define :supervisor_service,
        :environment => {},
        :action => :enable do
 
-  raise 'command is required' if params[:command].nil?
-
   include_recipe 'supervisor'
 
-  execute 'update supervisor configuration' do
-    command "supervisorctl update #{params[:name]}"
-    action :nothing
-  end
+  act = params[:action].to_sym
+  env = params[:environment]
+  name = params[:name]
 
-  # Convert environment hash to A=1,B=2,C=3
-  if params[:environment].is_a?(Hash)
-    params[:environment] = params[:environment].map do |k, v|
-      "#{k}=#{v}"
-    end.join(',')
-  end
+  # Enable will install the service and templated configuration file
+  if act == :enable
+    raise 'command is required' if params[:command].nil?
 
-  template "/etc/supervisor/conf.d/#{params[:name]}.conf" do
-    cookbook 'supervisor'
-    source 'supervisor_service.conf.erb'
-    variables params
-    owner 'root'
-    group 'root'
-    mode 0644
-    notifies :run, resources(:execute => 'update supervisor configuration')
+    execute 'update supervisor configuration' do
+      command "supervisorctl update #{name}"
+      action :nothing
+    end
+
+    # Convert environment hash to A=1,B=2,C=3
+    if env.is_a?(Hash)
+      params[:environment] = env.map { |k, v| "#{k}=#{v}" }.join(',')
+    end
+
+    template "/etc/supervisor/conf.d/#{name}.conf" do
+      cookbook 'supervisor'
+      source 'supervisor_service.conf.erb'
+      variables params
+      owner 'root'
+      group 'root'
+      mode 0644
+      notifies :run, resources(:execute => 'update supervisor configuration')
+    end
+
+    # Handle other action parameters by passing it along to supervisorctl
+  elsif act != :nothing
+    execute "supervisorctl #{action} #{name}"
   end
 end
