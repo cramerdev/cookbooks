@@ -11,7 +11,6 @@ startretries=<%= @startretries %>
 exitcodes=<%= @exitcodes %>
 stopsignal=<%= @stopsignal %>
 stopwaitsecs=<%= @stopwaitsecs %>
-<%= "user=#{@user}" if @user -%>
 redirect_stderr=<%= @redirect_stderr %>
 stdout_logfile=<%= @stdout_logfile %>
 stdout_logfile_maxbytes=<%= @stdout_logfile_maxbytes %>
@@ -23,7 +22,8 @@ stderr_logfile_maxbytes=<%= @stderr_logfile_maxbytes %>
 stderr_logfile_backups=<%= @stderr_logfile_backups %>
 stderr_capture_maxbytes=<%= @stderr_capture_maxbytes %>
 stderr_events_enabled=<%= @stderr_events_enabled %>
-<%= "environment=#{@environment}" if @environment -%>
-<%= "directory=#{@directory}" if @directory -%>
-<%= "umask=#{@umask}" if @umask -%>
 serverurl=<%= @serverurl %>
+<%= "environment=#{@environment}" if @environment %>
+<%= "directory=#{@directory}" if @directory %>
+<%= "umask=#{@umask}" if @umask %>
+<%= "user=#{@user}" if @user %>

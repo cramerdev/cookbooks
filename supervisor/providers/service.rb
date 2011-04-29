@@ -37,6 +37,7 @@ action :add do
     action :nothing
   end
   template "/etc/supervisor/conf.d/#{new_resource.name}.conf" do
+    cookbook 'supervisor'
     source 'service.conf.erb'
     mode '644'
     variables attrs
