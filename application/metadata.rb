@@ -13,6 +13,6 @@ recipe           "application::rails_nginx_rvm_passenger", "Deploy a rails appli
 recipe           "application::unicorn", "Sets up the deployed Rails application with Unicorn as the web server"
 recipe           "application::wordpress", "Sets up a deployed WordPress application with Apache2 as the web server"
 
-%w{ rvm_passenger runit apache2 }.each do |cb|
+%w{ runit apache2 }.each do |cb|
   depends cb
 end
