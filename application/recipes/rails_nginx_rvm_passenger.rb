@@ -9,7 +9,7 @@
 
 app = node.run_state[:current_app] 
 
-    node.default[:apps][app[:id]][node.app_environment][:run_migrations] = false
+node.default[:apps][app[:id]][node.app_environment][:run_migrations] = false
 
 
 ## First, install any application specific packages
