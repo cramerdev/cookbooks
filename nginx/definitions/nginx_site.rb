@@ -19,19 +19,17 @@
 #
 
 define :nginx_site, :enable => true do
-  # Account for 000-default, added in nxen/dissite
-  link_name = params[:name] == 'default' ? "000-#{params[:name]}" : params[:name]
   if params[:enable]
     execute "nxensite #{params[:name]}" do
       command "/usr/sbin/nxensite #{params[:name]}"
       notifies :restart, resources(:service => "nginx")
-      not_if do ::File.symlink?("#{node[:nginx][:dir]}/sites-enabled/#{link_name}") end
+      not_if do ::File.symlink?("#{node[:nginx][:dir]}/sites-enabled/#{params[:name]}") end
     end
   else
     execute "nxdissite #{params[:name]}" do
       command "/usr/sbin/nxdissite #{params[:name]}"
       notifies :restart, resources(:service => "nginx")
-      only_if do ::File.symlink?("#{node[:nginx][:dir]}/sites-enabled/#{link_name}") end
+      only_if do ::File.symlink?("#{node[:nginx][:dir]}/sites-enabled/#{params[:name]}") end
     end
   end
 end
