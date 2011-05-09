@@ -8,13 +8,7 @@
 #
 
 %w{ nanoc3 RedCloth coderay kramdown }.each do |gem|
-  if node[:recipes].include?("rvm")
-    rvm_gem gem do
-      global true
-    end
-  else
-    gem_package gem
-  end
+  gem_package gem
 end
 
 app = node.run_state[:current_app]
@@ -52,11 +46,11 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
     :server_aliases => [ node[:fqdn], app[:id] ],
     :domain_aliases => (app[:domain_aliases] || {})[node[:app_environment]] || []
   )
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, 'service[nginx]'
 end
 
 nginx_site "#{app[:id]}.conf" do
-  notifies :restart, resources(:service => "nginx")
+  notifies :restart, 'service[nginx]'
 end
 
 directory app[:deploy_to] do
