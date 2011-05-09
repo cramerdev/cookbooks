@@ -73,7 +73,7 @@ directory "#{app['deploy_to']}/shared" do
   recursive true
 end
 
-%w{ log pids system vendor_bundle }.each do |dir|
+%w{ config log pids system vendor_bundle }.each do |dir|
 
   directory "#{app['deploy_to']}/shared/#{dir}" do
     owner app['owner']
@@ -202,8 +202,8 @@ deploy_revision app['id'] do
   end
 
   symlink_before_migrate({
-    "database.yml"  => "config/database.yml",
-    "memcached.yml" => "config/memcached.yml"
+    "config/database.yml"  => "config/database.yml",
+    "config/memcached.yml" => "config/memcached.yml"
   })
 
   if (app['migrate'] || {})[node.app_environment] && node[:apps][app['id']][node.app_environment][:run_migrations]
@@ -212,13 +212,27 @@ deploy_revision app['id'] do
   else
     migrate false
   end
+
   before_symlink do
-    ruby_block "remove_run_migrations" do
-      block do
-        if node.role?("#{app['id']}_run_migrations")
-          Chef::Log.info("Migrations were run, removing role[#{app['id']}_run_migrations]")
-          node.run_list.remove("role[#{app['id']}_run_migrations]")
+    if app[:database_master_role]
+      results = search(:node, "run_list:role\\[#{app[:database_master_role][0]}\\]", nil, 0, 1)
+      rows = results[0]
+      if rows.length == 1
+        dbm = rows[0]
+
+        template "#{@new_resource.shared_path}/config/database.yml" do
+          source "database.yml.erb"
+          owner app[:owner]
+          group app[:group]
+          mode "644"
+          variables(
+            :host => dbm[:fqdn],
+            :databases => app[:databases]
+          )
         end
+
+      else
+        Chef::Log.warn("No node with role #{app[:database_master_role][0]}, database.yml not rendered!")
       end
     end
   end
