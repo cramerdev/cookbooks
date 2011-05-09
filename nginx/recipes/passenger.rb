@@ -157,6 +157,14 @@ cookbook_file "#{node[:nginx][:dir]}/mime.types" do
   notifies :restart, resources(:service => "nginx"), :immediately
 end
 
+template "#{node[:nginx][:dir]}/conf.d/passenger.conf" do
+  source 'passenger.conf.erb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  notifies :restart, 'service[nginx]'
+end
+
 nginx_site 'default' do
   notifies :restart, resources(:service => 'nginx')
 end

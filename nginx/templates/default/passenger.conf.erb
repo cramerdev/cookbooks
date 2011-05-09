@@ -1,0 +1,2 @@
+passenger_root <%= node[:languages][:ruby][:gems_dir] %>/gems/passenger-<%= node[:nginx][:passenger][:version] %>;
+passenger_ruby <%= node[:languages][:ruby][:ruby_bin] %>;

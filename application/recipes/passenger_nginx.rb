@@ -19,6 +19,8 @@
 
 app = node.run_state[:current_app]
 
+include_recipe 'nginx::passenger'
+
 template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
   source 'web_app.conf.erb'
   cookbook app[:cookbook] || app[:id]

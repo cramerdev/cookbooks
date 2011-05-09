@@ -1,4 +1,4 @@
-default[:nginx][:version]      = "0.8.54"
+default[:nginx][:version]      = "1.0.0"
 
 case platform
 when "debian","ubuntu"
@@ -33,4 +33,4 @@ default[:nginx][:worker_processes]   = cpu[:total]
 default[:nginx][:worker_connections] = 2048
 default[:nginx][:server_names_hash_bucket_size] = 64
 
-default[:nginx][:passenger][:version] = '3.0.4'
+default[:nginx][:passenger][:version] = '3.0.7'
