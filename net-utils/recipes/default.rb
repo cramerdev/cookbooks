@@ -20,28 +20,20 @@
 case node[:platform]
 when "ubuntu","debian"
   %w{ mailutils whois }.each do |pkg|
-    package pkg do
-      action :install
-    end
+    package pkg
   end
 when "centos","redhat"
   %w{ mailx jwhois }.each do |pkg|
-    package pkg do
-      action :install
-    end
+    package pkg
   end
 end
 
 # Common packages
 %w{ curl lynx ncftp rsync telnet traceroute wget }.each do |pkg|
-  package pkg do
-    action :install
-  end
+  package pkg
 end
 
 # Gems
-%w{ ghost }.each do |pkg|
-  gem_package pkg do
-    action :install
-  end
+%w{ ghost serve }.each do |pkg|
+  gem_package pkg
 end
