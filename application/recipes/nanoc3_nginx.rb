@@ -46,12 +46,10 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
     :server_aliases => [ node[:fqdn], app[:id] ],
     :domain_aliases => (app[:domain_aliases] || {})[node[:app_environment]] || []
   )
-  notifies :restart, 'service[nginx]'
+  notifies :restart, resources('supervisor_service[nginx]')
 end
 
-nginx_site "#{app[:id]}.conf" do
-  notifies :restart, 'service[nginx]'
-end
+nginx_site "#{app[:id]}.conf"
 
 directory app[:deploy_to] do
   owner app[:owner]

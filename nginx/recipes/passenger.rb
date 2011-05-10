@@ -20,11 +20,8 @@
 # limitations under the License.
 #
 
-include_recipe "build-essential"
-
-unless platform?("centos","redhat","fedora")
-  include_recipe "runit"
-end
+include_recipe 'build-essential'
+include_recipe 'supervisor'
 
 packages = value_for_platform(
     ["centos","redhat","fedora"] => {'default' => ['pcre-devel', 'openssl-devel']},
@@ -84,37 +81,10 @@ cookbook_file '/var/www/nginx-default/index.html' do
   mode '0644'
 end
 
-unless platform?("centos","redhat","fedora")
-  runit_service "nginx"
-
-  service "nginx" do
-    subscribes :restart, resources(:bash => "compile_nginx_source")
-  end
-else
-  #install init db script
-  template "/etc/init.d/nginx" do
-    source "nginx.init.erb"
-    owner "root"
-    group "root"
-    mode "0755"
-  end
-
-  #install sysconfig file (not really needed but standard)
-  template "/etc/sysconfig/nginx" do
-    source "nginx.sysconfig.erb"
-    owner "root"
-    group "root"
-    mode "0644"
-  end
-
-  # register service
-  service "nginx" do
-    supports :status => true, :restart => true, :reload => true
-    action :enable
-    subscribes :restart, resources(:bash => "compile_nginx_source")
-  end
+supervisor_service 'nginx' do
+  command "#{node[:nginx][:src_binary]} -c #{node[:nginx][:dir]}/nginx.conf"
+  subscribes :restart, resources('bash[compile_nginx_source]')
 end
-
 
 %w{ sites-available sites-enabled conf.d }.each do |dir|
   directory "#{node[:nginx][:dir]}/#{dir}" do
@@ -146,7 +116,7 @@ template "nginx.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources(:service => "nginx"), :immediately
+  notifies :restart, resources('supervisor_service[nginx]'), :immediately
 end
 
 cookbook_file "#{node[:nginx][:dir]}/mime.types" do
@@ -154,7 +124,7 @@ cookbook_file "#{node[:nginx][:dir]}/mime.types" do
   owner "root"
   group "root"
   mode '0644'
-  notifies :restart, resources(:service => "nginx"), :immediately
+  notifies :restart, resources('supervisor_service[nginx]'), :immediately
 end
 
 template "#{node[:nginx][:dir]}/conf.d/passenger.conf" do
@@ -162,11 +132,9 @@ template "#{node[:nginx][:dir]}/conf.d/passenger.conf" do
   owner 'root'
   group 'root'
   mode '0644'
-  notifies :restart, 'service[nginx]'
+  notifies :restart, resources('supervisor_service[nginx]')
 end
 
 nginx_site 'default' do
-  notifies :restart, resources(:service => 'nginx')
+  notifies :restart, resources('supervisor_service[nginx]')
 end
-
-

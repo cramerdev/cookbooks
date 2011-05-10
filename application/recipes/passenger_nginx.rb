@@ -37,11 +37,11 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
     :ssl => (app[:ssl] || {})[node[:app_environment]] || {},
     :auth => (app[:auth] || {})[node[:app_environment]] || {}
   )
-  notifies :restart, 'service[nginx]'
+  notifies :restart, 'supervisor_service[nginx]'
 end
 
 nginx_site "#{app['id']}.conf" do
-  notifies :restart, 'service[nginx]'
+  notifies :restart, 'supervisor_service[nginx]'
 end
 
 d = resources(:deploy_revision => app[:id])

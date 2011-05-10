@@ -12,7 +12,7 @@ recipe "nginx::passenger", "Installs passenger and nginx from source with passen
   supports os
 end
 
-%w{ build-essential runit }.each do |cb|
+%w{ build-essential supervisor }.each do |cb|
   depends cb
 end
 

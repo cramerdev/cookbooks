@@ -9,10 +9,9 @@ recipe           "application::apache2_proxied", "Installs a vhost for an app th
 recipe           "application::passenger-nginx", "Installs Ruby Enterprise with Passenger under Nginx"
 recipe           "application::passenger_apache2", "Sets up a deployed Rails application as a Passenger virtual host in Apache2"
 recipe           "application::rails", "Deploys a Rails application specified in a data bag with the deploy_revision resource"
-recipe           "application::rails_nginx_rvm_passenger", "Deploy a rails application with RVM, Passenger and Nginx"
 recipe           "application::unicorn", "Sets up the deployed Rails application with Unicorn as the web server"
 recipe           "application::wordpress", "Sets up a deployed WordPress application with Apache2 as the web server"
 
-%w{ runit apache2 nginx }.each do |cb|
+%w{ supervisor apache2 nginx }.each do |cb|
   depends cb
 end
