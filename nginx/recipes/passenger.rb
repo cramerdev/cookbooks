@@ -81,8 +81,9 @@ cookbook_file '/var/www/nginx-default/index.html' do
   mode '0644'
 end
 
-supervisor_service 'nginx' do
-  command "#{node[:nginx][:src_binary]} -c #{node[:nginx][:dir]}/nginx.conf"
+service 'nginx' do
+  provider 'supervisor_service'
+  start_command "#{node[:nginx][:src_binary]} -c #{node[:nginx][:dir]}/nginx.conf"
   subscribes :restart, resources('bash[compile_nginx_source]')
 end
 
@@ -116,7 +117,7 @@ template "nginx.conf" do
   owner "root"
   group "root"
   mode "0644"
-  notifies :restart, resources('supervisor_service[nginx]'), :immediately
+  notifies :restart, resources('service[nginx]'), :immediately
 end
 
 cookbook_file "#{node[:nginx][:dir]}/mime.types" do
@@ -124,7 +125,7 @@ cookbook_file "#{node[:nginx][:dir]}/mime.types" do
   owner "root"
   group "root"
   mode '0644'
-  notifies :restart, resources('supervisor_service[nginx]'), :immediately
+  notifies :restart, resources('service[nginx]'), :immediately
 end
 
 template "#{node[:nginx][:dir]}/conf.d/passenger.conf" do
@@ -132,9 +133,9 @@ template "#{node[:nginx][:dir]}/conf.d/passenger.conf" do
   owner 'root'
   group 'root'
   mode '0644'
-  notifies :restart, resources('supervisor_service[nginx]')
+  notifies :restart, resources('service[nginx]')
 end
 
 nginx_site 'default' do
-  notifies :restart, resources('supervisor_service[nginx]')
+  notifies :restart, resources('service[nginx]')
 end

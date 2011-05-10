@@ -17,6 +17,17 @@
 # limitations under the License.
 #
 
+# Reopen Chef's service resource and add support for variables
+class ::Chef::Resource::Service
+  def variables(arg = {})
+    set_or_return(
+      :variables,
+      arg,
+      :kind_of => [ Hash ]
+    )
+  end
+end
+
 include Chef::Mixin::Command
 
 sc = 'supervisorctl'
@@ -25,13 +36,10 @@ action :add do
   raise "command required" if new_resource.command.nil?
 
   # Convert environment hash to A=1,B=2,C=3
-  env = new_resource.environment
+  env = (new_resource.variables || {})[:environment]
   if env.kind_of?(Hash)
-    new_resource.environment(env.map { |k, v| "#{k}=#{v}" }.join(','))
+    new_resource.variables[:environment] = env.map { |k, v| "#{k}=#{v}" }.join(',')
   end
-
-  # Get the merged attributes
-  attrs = resource_attributes
 
   execute "supervisorctl update" do
     action :nothing
@@ -40,7 +48,7 @@ action :add do
     cookbook 'supervisor'
     source 'service.conf.erb'
     mode '644'
-    variables attrs
+    variables resource_variables
     notifies :run, resources('execute[supervisorctl update]')
   end
   @s.enabled(true)
@@ -100,21 +108,37 @@ end
 
 private
 
-# This is a hack. I for the life of me can't figure out how to get the default
-# attributes from the resource, so this just lists them all out, puts their
-# values in a hash, and merges them with the actual given values.
-def resource_attributes
-  attrs = %w{ command process_name numprocs numprocs_start priority autostart
-              autorestart startsecs startretries exitcodes stopsignal
-              stopwaitsecs user redirect_stderr stdout_logfile
-              stdout_logfile_maxbytes stdout_logfile_backups
-              stdout_capture_maxbytes stdout_events_enabled stderr_logfile
-              stderr_logfile_maxbytes stderr_logfile_backups
-              stderr_capture_maxbytes stderr_events_enabled environment
-              directory umask serverurl }
-  h = {}
-  attrs.each do |attr|
-    h[attr.to_sym] = new_resource.send(attr)
-  end
-  h.merge(new_resource.to_hash)
+# Default variables merged with the ones given, plus the arguments that map
+# to config items
+def resource_variables
+  { :command                  => new_resource.start_command,
+    :priority                 => new_resource.priority,
+    :process_name             => '%(program_name)s',
+    :numprocs                 => 1,
+    :numprocs_start           => 0,
+    :priority                 => 999,
+    :autostart                => true,
+    :autorestart              => 'unexpected',
+    :startsecs                => 1,
+    :startretries             => 3,
+    :exitcodes                => '0,2',
+    :stopsignal               => 'TERM',
+    :stopwaitsecs             => 10,
+    :user                     => nil,
+    :redirect_stderr          => false,
+    :stdout_logfile           => 'AUTO',
+    :stdout_logfile_maxbytes  => '50MB',
+    :stdout_logfile_backups   => 10,
+    :stdout_capture_maxbytes  => 0,
+    :stdout_events_enabled    => 0,
+    :stderr_logfile           => 'AUTO',
+    :stderr_logfile_maxbytes  => '50MB',
+    :stderr_logfile_backups   => 10,
+    :stderr_capture_maxbytes  => 0,
+    :stderr_events_enabled    => false,
+    :environment              => nil,
+    :directory                => nil,
+    :umask                    => nil,
+    :serverurl                => 'AUTO'
+  }.merge(new_resource.variables || {})
 end
