@@ -123,7 +123,7 @@ end
 
 #search the 'users' databag and pull out sysadmins for users and groups
 begin
-  admins = search(:users, 'groups:sysadmin') || []
+  admins = search(:users, 'groups:admin') || []
 rescue
   admins = []
 end
