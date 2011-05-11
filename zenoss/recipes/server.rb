@@ -199,14 +199,15 @@ search(:role, "*:*").each do |role|
   end
 end
 
+# FIXME: This breaks
 #move the localhost to SSH monitoring since we're not using SNMP
-zenoss_zendmd "move Zenoss server" do
-  batch = "dmd.Devices.moveDevices('/Server/SSH/Linux/MySQL', '#{node[:fqdn]}')\n"
-  batch += "dev = dmd.Devices.findDevice('#{node[:fqdn]}')\n"
-  batch += "dev.setManageIp('#{node[:ipaddress]}')"
-  command batch
-  action :run
-end
+#zenoss_zendmd "move Zenoss server" do
+  #batch = "dmd.Devices.moveDevices('/Server/SSH/Linux/MySQL', '#{node[:fqdn]}')\n"
+  #batch += "dev = dmd.Devices.findDevice('#{node[:fqdn]}')\n"
+  #batch += "dev.setManageIp('#{node[:ipaddress]}')"
+  #command batch
+  #action :run
+#end
 
 #all nodes (for now, until pick a role or other flag to standardize on)
 nodes = search(:node, 'zenoss:device*') || []
