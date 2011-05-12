@@ -21,6 +21,7 @@
   end
 end
 
+# Git Flow
 remote_file "/usr/src/gitflow-install.sh" do
   source "http://github.com/nvie/gitflow/raw/develop/contrib/gitflow-installer.sh"
   owner "root"
@@ -33,4 +34,10 @@ execute "gitflow-install" do
   creates "/usr/local/bin/git-flow"
 end
 
-# TODO: git-flow completion (#9163)
+# Git Flow Completion
+remote_file "/etc/bash_completion.d/git-flow" do
+  action :create_if_missing
+  source 'https://github.com/bobthecow/git-flow-completion/raw/master/git-flow-completion.bash'
+  owner 'root'
+  mode 0755
+end
