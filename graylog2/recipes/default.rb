@@ -17,6 +17,9 @@
 # limitations under the License.
 #
 
+include_recipe 'java'
+include_recipe 'supervisor'
+
 # Add apt public key for mongodb repo
 execute "get_mongodb_pubkey" do
   command "apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10"
@@ -34,11 +37,7 @@ apt_repository "mongoDB" do
 end
 
 # Install required apt packages
-%w{ openjdk-6-jre mongodb-stable }.each do |pkg|
-  package pkg do
-    action :install
-  end
-end
+package 'mongodb-stable'
 
 # Create application directory
 directory "#{node[:graylog2][:basedir]}/src" do
@@ -77,24 +76,8 @@ template "/etc/graylog2.conf" do
   mode 0644
 end
 
-# Install init.d script
-template "/etc/init.d/graylog2" do
-  source "graylog2.init.erb"
-  owner "root"
-  group "root"
-  mode 0755
-end
-
-# Update the rc.d system for graylog
-execute "update-rcd-graylog2" do
-  command "update-rc.d graylog2 defaults"
-  creates "/etc/rc0.d/K20graylog2"
-  notifies :enable, "service[graylog2]", :immediately
-  notifies :start, "service[graylog2]", :delayed
-end
-
-# Service def for graylog2
-service "graylog2" do
-  supports :restart => true
-  action :enable
+# Supervisor service
+service 'graylog2' do
+  provider 'supervisor_service'
+  start_command "#{node[:graylog2][:basedir]}/server/bin/graylog2ctl start"
 end
