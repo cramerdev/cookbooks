@@ -8,7 +8,7 @@ version           "0.16.3"
 recipe "passenger_apache2", "Installs Passenger as an Apache module"
 recipe "passenger_apache2::mod_rails", "Enables Apache module configuration for passenger module"
 
-%w{ packages ruby apache2 rails }.each do |cb|
+%w{ packages apache2 rails }.each do |cb|
   depends cb
 end
 
