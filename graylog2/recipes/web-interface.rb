@@ -20,11 +20,9 @@
 # Install graylog2 server
 include_recipe "graylog2::default"
 
+
 # Ensure bundler is available
-gem_package "bundler" do
-  version "1.0.3"  # Put in for our infrastructure requirements at MDSOL
-  action :install
-end
+include_recipe 'bundler'
 
 # Ensure rake is available
 gem_package "rake" do
@@ -32,7 +30,7 @@ gem_package "rake" do
 end
 
 # Install required apt packages
-%w{ build-essential make rrdtool libopenssl-ruby libmysqlclient-dev ruby-dev postfix mysql-server }.each do |pkg|
+%w{ build-essential make rrdtool libmysqlclient-dev postfix mysql-server }.each do |pkg|
   package pkg do
     action :install
   end
@@ -70,7 +68,7 @@ end
 # Perform bundle install on newly-installed webui rails project
 execute "webui_bundle" do
   cwd "#{node[:graylog2][:basedir]}/web"
-  command "bundle install"
+  command "bundle install --without development test"
   action :nothing
   subscribes :run, resources(:link => "graylog2_webui"), :immediately
 end
