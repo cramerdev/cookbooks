@@ -77,7 +77,6 @@ template "/etc/graylog2.conf" do
 end
 
 # Supervisor service
-service 'graylog2' do
-  provider 'supervisor_service'
-  start_command "#{node[:graylog2][:basedir]}/server/bin/graylog2ctl start"
+supervisor_service 'graylog2' do
+  start_command "java -jar #{node[:graylog2][:basedir]}/server/graylog2-server.jar"
 end

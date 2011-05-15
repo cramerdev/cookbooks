@@ -7,7 +7,7 @@
   <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://<%= node[:fqdn] %>$1 [R=301,L]
+    RewriteRule ^(.*)$ https://<%= node[:graylog2][:domain_name] || node[:fqdn] %>$1 [R=301,L]
   </IfModule>
   <% else %>
   DocumentRoot <%= node[:graylog2][:basedir] %>/web/public
@@ -33,7 +33,7 @@
   CustomLog /var/log/apache2/access.log combined
 
   SSLEngine on
-  SSLCertificateFile <%= "#{node[:apache][:dir]}/ssl/#{node[:fqdn]}.pem" %>
-  SSLCertificateKeyFile <%= "#{node[:apache][:dir]}/ssl/#{node[:fqdn]}.key" %>
+  SSLCertificateFile <%= "#{node[:apache][:dir]}/ssl/#{node[:graylog2][:domain_name] || node[:fqdn]}.pem" %>
+  SSLCertificateKeyFile <%= "#{node[:apache][:dir]}/ssl/#{node[:graylog2][:domain_name] || node[:fqdn]}.key" %>
 </VirtualHost>
 <% end %>

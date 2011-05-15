@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-actions :add, :remove, :clear, :remove, :restart, :start, :stop, :update
+actions :add, :remove, :clear, :restart, :start, :stop, :update
 
 attribute :service_name, :name_attribute => true
 attribute :start_command, :kind_of => String

@@ -33,13 +33,14 @@ include Chef::Mixin::Command
 sc = 'supervisorctl'
 
 action :add do
-  raise "command required" if new_resource.command.nil?
+  raise "start_command required" if new_resource.start_command.nil?
 
   # Convert environment hash to A=1,B=2,C=3
   env = (new_resource.variables || {})[:environment]
   if env.kind_of?(Hash)
     new_resource.variables[:environment] = env.map { |k, v| "#{k}=#{v}" }.join(',')
   end
+  vars = resource_variables
 
   execute "supervisorctl update" do
     action :nothing
@@ -48,7 +49,7 @@ action :add do
     cookbook 'supervisor'
     source 'service.conf.erb'
     mode '644'
-    variables resource_variables
+    variables vars
     notifies :run, resources('execute[supervisorctl update]')
   end
   @s.enabled(true)

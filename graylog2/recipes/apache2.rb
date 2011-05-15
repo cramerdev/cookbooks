@@ -20,9 +20,6 @@
 # Install graylog2 web-interface
 include_recipe 'graylog2::web-interface'
 
-# Install apache2 using the cookbook.
-include_recipe 'apache2'
-
 # Install passenger
 include_recipe 'passenger_apache2::mod_rails'
 
