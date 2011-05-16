@@ -112,7 +112,8 @@ private
 # Default variables merged with the ones given, plus the arguments that map
 # to config items
 def resource_variables
-  { :command                  => new_resource.start_command,
+  { :name                     => new_resource.service_name,
+    :command                  => new_resource.start_command,
     :priority                 => new_resource.priority,
     :process_name             => '%(program_name)s',
     :numprocs                 => 1,
