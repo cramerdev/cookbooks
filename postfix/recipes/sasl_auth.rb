@@ -18,10 +18,13 @@
 # limitations under the License.
 #
 
-%w{ libsasl2-2  ca-certificates}.each do |pkg|
-  package pkg do
-    action :install
+case node[:platform]
+when 'debian', 'ubuntu'
+  %w{ libsasl2-2  ca-certificates}.each do |pkg|
+    package pkg
   end
+when 'centos', 'redhat'
+  package 'cyrus-sasl-plain'
 end
 
 execute "postmap-sasl_passwd" do

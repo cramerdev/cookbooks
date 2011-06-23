@@ -1,9 +1,9 @@
 #
-# Author:: Joshua Timberman(<joshua@opscode.com>)
+# Author:: Nathan L Smith
 # Cookbook Name:: postfix
-# Recipe:: default
+# Recipe:: sendgrid
 #
-# Copyright 2009, Opscode, Inc.
+# Copyright 2011, Cramer Development, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,18 +18,6 @@
 # limitations under the License.
 #
 
-package 'postfix'
+include_recipe 'postfix'
+include_recipe 'postfix::sasl_auth'
 
-service "postfix" do
-  action [:enable, :start]
-end
-
-%w{main master}.each do |cfg|
-  template "/etc/postfix/#{cfg}.cf" do
-    source "#{cfg}.cf.erb"
-    owner "root"
-    group "root"
-    mode 0644
-    notifies :restart, resources(:service => "postfix")
-  end
-end
