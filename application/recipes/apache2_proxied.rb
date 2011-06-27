@@ -19,7 +19,9 @@
 
 app = node.run_state[:current_app]
 
-include_recipe "apache2"
+include_recipe 'apache2'
+include_recipe 'apache2::mod_proxy'
+include_recipe 'apache2::mod_proxy_http'
 
 # First, install any application specific packages
 if app[:packages]
