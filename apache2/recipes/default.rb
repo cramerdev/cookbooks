@@ -209,7 +209,10 @@ include_recipe "apache2::mod_negotiation"
 include_recipe "apache2::mod_setenvif"
 include_recipe "apache2::mod_log_config" if platform?("centos", "redhat", "fedora", "suse", "arch")
 
-apache_site 'default'
+apache_site 'default' do
+  enable node[:apache][:enable_default_site]
+end
+
 
 service "apache2" do
   action :start
