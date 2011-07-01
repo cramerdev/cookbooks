@@ -39,6 +39,12 @@ execute "tar xfz /usr/src/#{cv}-0.6.7.tar.gz && mv /usr/src/tomcat /home/#{cv}/#
   creates "/home/#{cv}/#{cv}"
 end
 
+directory "/home/#{cv}/backup" do
+  owner "#{cv}"
+  group "#{cv}"
+  mode '0700'
+end
+
 supervisor_service "#{cv}" do
   start_command "/home/#{cv}/#{cv}/bin/catalina.sh run"
   variables :directory => "/home/#{cv}/#{cv}",
