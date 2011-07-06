@@ -7,7 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 
-# Skip to "HERE HERE HERE" below for user configurable data
 
 # Only support Debian & Ubuntu (RedHat et al. coming soon)
 case node.platform
@@ -40,15 +39,15 @@ when "debian", "ubuntu"
         mode 0755
     end
 
-    template "/etc/dd-agent/datadog.conf" do
-        owner "root"
-        group "root"
-        mode 0644
-        #
-        # HERE HERE HERE Replace the placeholder below with your api key
-        variables(:api_key => "REPLACE_ME_WITH_YOUR_API_KEY", :dd_url => "https://app.datadoghq.com")
-        # You are done! No need to touch the rest of the file
-        #
-        notifies :restart, "service[datadog-agent]", :immediately
+    if node.attribute?("datadog") and node.datadog.attribute?("api_key")
+        template "/etc/dd-agent/datadog.conf" do
+            owner "root"
+            group "root"
+            mode 0644
+            variables(:api_key => node[:datadog][:api_key], :dd_url => node[:datadog][:url])
+            notifies :restart, "service[datadog-agent]", :immediately
+        end
+    else
+        raise "dd-agent: please edit attributes/default.rb and set you API key"
     end
 end
