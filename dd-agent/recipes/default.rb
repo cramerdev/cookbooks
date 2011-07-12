@@ -17,16 +17,21 @@ when "debian", "ubuntu"
     end
 
     # Add the repo
-    cookbook_file "/etc/apt/sources.list.d/datadog.list" do
+    template "/etc/apt/sources.list.d/datadog.list" do
         owner "root"
         group "root"
         mode 0755
+        variables(
+            :repo => node.datadog.repo
+        )
     end
 
     # Update the repo
     execute "apt-get update"
 
-    package "datadog-agent"
+    package "datadog-agent" do
+        action [ :install, :upgrade ]
+    end
 
     service "datadog-agent" do
         action :nothing
