@@ -25,7 +25,7 @@ include_recipe "php::module_mysql"
 #include_recipe "php::module_memcache"
 #include_recipe "php::module_gd"
 #include_recipe "php::module_pgsql"
-include_recipe "php::pear"
+#include_recipe "php::pear"
 
 cookbook_file value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"default" => "/etc/php.ini"}, "default" => "/etc/php5/apache2/php.ini") do
   source "apache2-php5.ini"
@@ -35,7 +35,7 @@ cookbook_file value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"d
   notifies :restart, resources("service[apache2]"), :delayed
 end
 
-packages = value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"default" => %w(php php-cli php-Smarty php-soap)}, "default" => %w{php5 php5-cli smarty php-soap})
+packages = value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"default" => %w(php53 php53-cli php53-soap)}, "default" => %w{php5 php5-cli php-soap})
 
 packages.each do |pkg|
   package pkg do
