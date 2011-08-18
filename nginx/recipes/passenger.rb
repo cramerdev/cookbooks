@@ -61,6 +61,14 @@ directory node[:nginx][:log_dir] do
   action :create
 end
 
+# Rotate logs
+template '/etc/logrotate.d/nginx' do
+  source 'logrotate.erb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
 directory node[:nginx][:dir] do
   owner "root"
   group "root"
