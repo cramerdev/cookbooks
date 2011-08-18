@@ -110,11 +110,15 @@ deploy_revision app[:id] do
   symlink_before_migrate({})
   symlinks({})
 
-  restart_command do
+  before_symlink do
+    execute 'bundle' do
+      command 'bundle --system --without development test'
+      cwd release_path
+    end
     execute 'nanoc3 compile' do
       command 'nanoc3 compile && rake deploy:rsync'
       user app[:owner]
-      cwd "#{app[:deploy_to]}/current"
+      cwd release_path
     end
   end
 end
