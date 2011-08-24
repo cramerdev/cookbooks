@@ -20,3 +20,8 @@
 default['haproxy']['member_port'] = "8080"
 default['haproxy']['enable_admin'] = true
 default['haproxy']['app_server_role'] = "webserver"
+
+# For source version
+default['haproxy']['source']['version'] = '1.4.16'
+default['haproxy']['source']['prefix'] = '/usr/local'
+default['haproxy']['source']['config_file'] = '/etc/haproxy.conf'
