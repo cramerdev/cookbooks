@@ -115,7 +115,7 @@ def resource_variables
   { :name                     => new_resource.service_name,
     :command                  => new_resource.start_command,
     :priority                 => new_resource.priority,
-    :process_name             => '%(program_name)s',
+    :process_name             => '%(program_name)s_%(process_num)02d',
     :numprocs                 => 1,
     :numprocs_start           => 0,
     :priority                 => 999,
