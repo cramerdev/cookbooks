@@ -66,3 +66,7 @@ else
   default[:postgresql][:version] = "8.4"
   set[:postgresql][:dir]            = "/etc/postgresql/#{node[:postgresql][:version]}/main"
 end
+
+# pgpool-II
+default['postgresql']['pgpool2']['version'] = '3.0.4'
+default['postgresql']['pgpool2']['download_url'] = "http://pgfoundry.org/frs/download.php/3076/pgpool-II-3.0.4.tar.gz"
