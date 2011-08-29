@@ -24,3 +24,8 @@ default['chef_server']['doc_root'] = "#{node['languages']['ruby']['gems_dir']}/g
 default['chef_server']['ssl_req']  = "/C=US/ST=Several/L=Locality/O=Example/OU=Operations/CN=chef-server-proxy/emailAddress=root@localhost"
 default['chef_server']['proxy']['css_expire_hours'] = "120"
 default['chef_server']['proxy']['js_expire_hours']  = "24"
+default['chef_server']['proxy']['ip_address'] = '*'
+default['chef_server']['proxy']['port'] = '443'
+default['chef_server']['proxy']['webui']['ip_address'] = '*'
+default['chef_server']['proxy']['webui']['port'] = '444'
+
