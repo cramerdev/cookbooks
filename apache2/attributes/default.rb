@@ -85,3 +85,5 @@ default[:apache][:worker][:minsparethreads] = 64
 default[:apache][:worker][:maxsparethreads] = 192
 default[:apache][:worker][:threadsperchild] = 64
 default[:apache][:worker][:maxrequestsperchild] = 0
+
+default[:apache][:enable_default_site] = true
