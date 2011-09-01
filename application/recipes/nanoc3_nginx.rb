@@ -7,6 +7,8 @@
 # All rights reserved.
 #
 
+include_recipe 'nginx::passenger'
+
 %w{ nanoc3 RedCloth coderay kramdown }.each do |gem|
   gem_package gem
 end

@@ -21,7 +21,7 @@
 package 'postfix'
 
 service "postfix" do
-  action [:enable, :start]
+  action [:enable]
 end
 
 %w{main master}.each do |cfg|
@@ -32,4 +32,8 @@ end
     mode 0644
     notifies :restart, resources(:service => "postfix")
   end
+end
+
+service 'postfix' do
+  action [:start]
 end
