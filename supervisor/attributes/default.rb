@@ -1,6 +1,7 @@
 #
+# Author:: Nathan L Smith <nathan@cramerdev.com>
 # Cookbook Name:: supervisor
-# Recipe:: default
+# Attributes:: default
 #
 # Copyright 2011, Cramer Development, Inc.
 #
@@ -17,20 +18,4 @@
 # limitations under the License.
 #
 
-package 'supervisor'
-
-group node['supervisor']['group']
-
-service 'supervisor' do
-  ignore_failure true
-  action [:enable, :start]
-end
-
-template '/etc/supervisor/supervisord.conf' do
-  source 'supervisord.conf.erb'
-  owner 'root'
-  group 'root'
-  mode '644'
-  notifies :restart, 'service[supervisor]'
-end
-
+default['supervisor']['group'] = 'supervisor'
