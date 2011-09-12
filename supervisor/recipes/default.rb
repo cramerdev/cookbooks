@@ -18,8 +18,19 @@
 #
 
 package 'supervisor'
+http://is.gd/rtZOa2 
+# Add nagios/icinga users to supervisor group
+more_users = []
+%w{ icinga nagios }.each do |service|
+  if node[service] && node[service]['user']
+    more_users << node[service]['user']
+  end
+end
 
-group node['supervisor']['group']
+group node['supervisor']['group'] do
+  members more_users
+  append true
+end
 
 service 'supervisor' do
   ignore_failure true
