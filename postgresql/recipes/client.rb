@@ -2,7 +2,7 @@
 # Cookbook Name:: postgresql
 # Recipe:: client
 #
-# Copyright 2009, Opscode, Inc.
+# Copyright 2010, Estately, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +17,5 @@
 # limitations under the License.
 #
 
-case node.platform
-when "ubuntu","debian"
-  package "postgresql-client"
-when "fedora","suse"
-  package "postgresql-devel"
-when "redhat","centos"
-  package "postgresql#{node.postgresql.version.split('.').join}-devel"
-end
+include_recipe "postgresql::ppa"
+package("postgresql-client-9.0") { action :upgrade }

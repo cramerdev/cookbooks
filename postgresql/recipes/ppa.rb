@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: postgresql
-# Recipe:: default
+# Recipe:: ppa
 #
-# Copyright 2009, Opscode, Inc.
+# Copyright 2010, Estately, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,4 +17,13 @@
 # limitations under the License.
 #
 
-include_recipe "postgresql::client"
+apt_repository "pitti-ppa" do
+  uri "http://ppa.launchpad.net/pitti/postgresql/ubuntu"
+  key "8683D8A2"
+  keyserver "keyserver.ubuntu.com"
+
+  distribution "lucid"
+  components   %w( main )
+
+  action :add
+end
