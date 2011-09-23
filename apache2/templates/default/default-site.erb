@@ -24,6 +24,15 @@
                 Allow from all
         </Directory>
 
+        <IfModule mod_status.c>
+                <Location /server-status>
+                        SetHandler server-status
+                        Order Deny,Allow
+                        Deny from all
+                        Allow from 127.0.0.1
+                </Location>
+        </IfModule>
+
         ErrorLog <%= node[:apache][:log_dir] %>/error.log 
 
         # Possible values include: debug, info, notice, warn, error, crit,
