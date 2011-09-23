@@ -17,6 +17,12 @@
 # limitations under the License.
 #
 
+cookbook_file 'extended-status' do
+  owner 'root'
+  group 'root'
+  mode '0644'
+end
+
 apache_module "status" do
   conf true
 end
