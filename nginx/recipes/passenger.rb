@@ -32,7 +32,9 @@ packages.each do |devpkg|
   package devpkg
 end
 
-gem_package 'passenger'
+gem_package 'passenger' do
+  version node['nginx']['passenger']['version']
+end
 
 nginx_version = node[:nginx][:version]
 
@@ -93,6 +95,7 @@ service 'nginx' do
   provider 'supervisor_service'
   start_command "#{node[:nginx][:src_binary]} -c #{node[:nginx][:dir]}/nginx.conf"
   subscribes :restart, resources('bash[compile_nginx_source]')
+  action [:enable, :start]
 end
 
 %w{ sites-available sites-enabled conf.d }.each do |dir|

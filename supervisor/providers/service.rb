@@ -32,7 +32,7 @@ include Chef::Mixin::Command
 
 sc = 'supervisorctl'
 
-action :add do
+action :enable do
   raise "start_command required" if new_resource.start_command.nil?
 
   # Convert environment hash to A=1,B=2,C=3
@@ -55,7 +55,7 @@ action :add do
   @s.enabled(true)
 end
 
-action :remove do
+action :disable do
   if @s.enabled
     execute "supervisorctl update" do
       action :nothing
@@ -65,12 +65,6 @@ action :remove do
       notifies :run, resources('execute[supervisorctl update]')
     end
     @s.enabled(false)
-  end
-end
-
-action :clear do
-  if @s.enabled
-    execute "#{sc} clear #{new_resource.name}"
   end
 end
 

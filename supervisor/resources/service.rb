@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-actions :add, :remove, :clear, :restart, :start, :stop, :update
+actions :enable, :disable, :restart, :start, :stop, :update
 
 attribute :service_name, :name_attribute => true
 attribute :start_command, :kind_of => String
@@ -26,10 +26,8 @@ attribute :running, :default => false
 attribute :priority, :kind_of => Fixnum, :default => 999
 attribute :variables, :kind_of => Hash
 attribute :supports, :kind_of => Hash, :default => { :restart => true,
-                                                     :add     => true,
-                                                     :remove  => true,
-                                                     :clear   => true,
-                                                     :remove  => true,
+                                                     :enable  => true,
+                                                     :disable => true,
                                                      :start   => true,
                                                      :stop    => true,
                                                      :update  => true }
@@ -37,5 +35,5 @@ attribute :supports, :kind_of => Hash, :default => { :restart => true,
 # Set default actions on initialize
 def initialize(*args)
   super
-  @action = [:add, :start]
+  @action = [:enable, :start]
 end

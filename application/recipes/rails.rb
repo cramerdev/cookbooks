@@ -215,7 +215,7 @@ deploy_revision app['id'] do
 
   before_symlink do
     if app[:database_master_role]
-      results = search(:node, "run_list:role\\[#{app[:database_master_role][0]}\\]", nil, 0, 1)
+      results = search(:node, "roles:#{app['database_master_role'][0]} AND chef_environment:#{node.chef_environment}", nil, 0, 1)
       rows = results[0]
       if rows.length == 1
         dbm = rows[0]

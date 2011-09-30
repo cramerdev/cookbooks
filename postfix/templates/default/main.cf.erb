@@ -18,7 +18,7 @@ smtp_tls_CAfile = <%= node[:postfix][:smtp_tls_cafile] %>
 smtp_use_tls = <%= node[:postfix][:smtp_use_tls] %>
 <% end -%>
 myhostname = <%= node[:postfix][:myhostname] %>
-mydomain = <%= node[:postfix][:mydomain] %>
+<% if node[:postfix][:mydomain] %>mydomain = <%= node[:postfix][:mydomain] %><% end %>
 myorigin = <%= node[:postfix][:myorigin] %>
 smtpd_banner = $myhostname ESMTP $mail_name 
 alias_maps = hash:/etc/aliases

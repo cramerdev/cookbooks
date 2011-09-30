@@ -18,7 +18,7 @@
 #
 
 package 'supervisor'
-http://is.gd/rtZOa2 
+
 # Add nagios/icinga users to supervisor group
 more_users = []
 %w{ icinga nagios }.each do |service|
