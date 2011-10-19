@@ -20,6 +20,7 @@
 ::Chef::Node.send(:include, Opscode::OpenSSL::Password)
 
 set_unless[:mysql][:server_debian_password] = secure_password
+set_unless[:mysql][:server_monitoring_password] = secure_password
 set_unless[:mysql][:server_root_password] = secure_password
 set_unless[:mysql][:server_repl_password] = secure_password
 default[:mysql][:bind_address]         = ipaddress
