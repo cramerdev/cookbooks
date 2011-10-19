@@ -23,17 +23,13 @@
 # limitations under the License.
 
 include_recipe "apache2"
+include_recipe "build-essential"
 
 if platform?("centos","redhat")
-  if dist_only?
-    # just the gem, we'll install the apache module within apache2
-    package "rubygem-passenger"
-    return
-  else
-    package "httpd-devel"
-  end
+  package "httpd-devel"
+  package "curl-devel"
 else
-  %w{ libcurl4-openssl-dev apache2-prefork-dev libapr1-dev }.each do |pkg|
+  %w{ apache2-prefork-dev libapr1-dev libcurl4-gnutls-dev }.each do |pkg|
     package pkg do
       action :upgrade
     end
