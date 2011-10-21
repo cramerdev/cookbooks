@@ -9,6 +9,6 @@ recipe            "graylog2", "Installs and configures Graylog2"
   supports os
 end
 
-%w{ apt java passenger_apache2 supervisor }.each do |pkg|
+%w{ apt java passenger_apache2 }.each do |pkg|
   depends pkg
 end

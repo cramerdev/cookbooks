@@ -18,57 +18,40 @@
 #
 
 include_recipe 'java'
-include_recipe 'supervisor'
 
-# Add apt public key for mongodb repo
-execute "get_mongodb_pubkey" do
-  command "apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10"
-  not_if 'apt-key list | grep "7F0CEB10"'
-  action :nothing
-end
-
-# Add mongodb repository to apt
-apt_repository "mongoDB" do
-  uri "http://downloads.mongodb.org/distros/ubuntu"
-  distribution "10.4"
-  components ["10gen"]
+apt_repository 'mongodb' do
+  keyserver 'keyserver.ubuntu.com'
+  key '7F0CEB10'
+  uri 'http://downloads.mongodb.org/distros/ubuntu'
+  distribution '10.4'
+  components ['10gen']
   action :add
-  notifies :run, "execute[get_mongodb_pubkey]", :immediately
 end
 
-# Install required apt packages
+apt_repository 'graylog2' do
+  keyserver 'keyserver.ubuntu.com'
+  key 'D77A4DCC'
+  uri 'http://ppa.lunix.com.au/ubuntu/'
+  distribution 'lucid'
+  components ['main']
+  action :add
+end
+
 package 'mongodb-stable'
+package 'graylog2-server'
 
-# Create application directory
-directory "#{node[:graylog2][:basedir]}/src" do
-  owner "root"
-  group "root"
-  mode 0755
-  action :create
-  recursive true
+template '/etc/mongodb.conf' do
+  source 'mongodb.conf.erb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  notifies :restart, 'service[mongodb]'
 end
 
-# Use remote_file to grab the desired version of graylog2-server package
-remote_file "graylog2_server" do
-  path "#{node[:graylog2][:basedir]}/src/graylog2-server-#{node[:graylog2][:serverversion]}.tar.gz"
-  source "https://github.com/downloads/Graylog2/graylog2-server/graylog2-server-#{node[:graylog2][:serverversion]}.tar.gz"
-  action :create_if_missing
+service 'mongodb' do
+  action [:enable, :start]
 end
 
-# Unpack graylog2-server
-execute "unpack_graylog2_server" do
-  cwd "#{node[:graylog2][:basedir]}/src"
-  command "tar zxf graylog2-server-#{node[:graylog2][:serverversion]}.tar.gz"
-  creates "#{node[:graylog2][:basedir]}/src/graylog2-server-#{node[:graylog2][:serverversion]}/build_date"
-  subscribes :run, resources(:remote_file => "graylog2_server"), :immediately
-end
-
-# Link graylog2-server
-link "#{node[:graylog2][:basedir]}/server" do
-  to "#{node[:graylog2][:basedir]}/src/graylog2-server-#{node[:graylog2][:serverversion]}"
-end
-
-# Install graylog.conf from template
 template "/etc/graylog2.conf" do
   source "graylog2.conf.erb"
   owner "root"
@@ -76,7 +59,8 @@ template "/etc/graylog2.conf" do
   mode 0644
 end
 
-# Supervisor service
-supervisor_service 'graylog2' do
-  start_command "java -jar #{node[:graylog2][:basedir]}/server/graylog2-server.jar"
+service 'graylog2-server' do
+  provider Chef::Provider::Service::Upstart
+  action [:enable, :start]
 end
+

@@ -20,7 +20,7 @@ web-interface
 -------------
 
 First calls graylog2::default to install the server.  Then downloads, installs, and configures 
-the rails-based graylog2-web-interface.  Also installs a local mysql-server to support it.  
+the rails-based graylog2-web-interface.
 
 apache2
 -------
