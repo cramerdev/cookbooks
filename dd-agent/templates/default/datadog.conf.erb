@@ -108,12 +108,14 @@ hostname: <%= node.name %>
 hudson_home: <%= node[:jenkins][:server][:home] %>
 <% end %>
 
+<% if node[:nagios] && node[:nagios][:server] && node[:nagios][:log_dir] %>
 # -------------------------------------------------------------------------- #
 #   Nagios                                                                   #
 # -------------------------------------------------------------------------- #
 
 # Path to Nagios's event log file
-#nagios_log: /var/log/nagios3/nagios.log
+nagios_log: <%= node[:nagios][:log_dir] %>/nagios.log
+<% end %>
 
 # -------------------------------------------------------------------------- #
 #   Cassandra                                                                #
