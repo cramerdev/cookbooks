@@ -20,6 +20,4 @@
 
 pack = value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"default" => "php53-mcrypt"}, "default" => "php5-mcrypt")
 
-package pack do
-  action :upgrade
-end
+package pack
