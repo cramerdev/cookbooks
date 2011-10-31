@@ -30,6 +30,15 @@ template '/etc/syslog-ng/syslog-ng.conf' do
   notifies :restart, 'service[syslog-ng]'
 end
 
+# Add /dev/xconsole
+case node['platform']
+when 'centos', 'redhat'
+  execute 'mknod -m 640 /dev/xconsole p' do
+    user 'root'
+    creates '/dev/xconsole'
+  end
+end
+
 service 'syslog-ng' do
   action [:enable, :start]
 end
