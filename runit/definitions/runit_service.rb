@@ -144,13 +144,8 @@ define :runit_service, :directory => nil, :only_if => false, :finish_script => f
     if params[:owner]
       control_cmd = "#{node[:runit][:chpst_bin]} -u #{params[:owner]} #{control_cmd}"
     end
-    if node[:platform] == 'ubuntu' || node[:platform] == 'debian'
-      provider Chef::Provider::Service::Debian
-      supports :restart => true, :status => true, :enable => true, :disable => true
-    else
-      provider Chef::Provider::Service::Init
-      supports :restart => true, :status => true
-    end
+    provider Chef::Provider::Service::Init
+    supports :restart => true, :status => true
     start_command "#{control_cmd} #{params[:start_command]} #{service_dir_name}"
     stop_command "#{control_cmd} #{params[:stop_command]} #{service_dir_name}"
     restart_command "#{control_cmd} #{params[:restart_command]} #{service_dir_name}"
