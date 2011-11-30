@@ -14,6 +14,8 @@ when "debian", "ubuntu"
       keyserver 'keyserver.ubuntu.com'
       key 'C7A7DA52'
       uri 'http://apt.datadoghq.com'
+      components ['unstable', 'main']
+      action :add
     end
 
     package 'datadog-agent'
