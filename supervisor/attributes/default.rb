@@ -19,3 +19,9 @@
 #
 
 default['supervisor']['group'] = 'supervisor'
+
+default['supervisor']['inet_http_server']['enabled'] = false
+default['supervisor']['inet_http_server']['username'] = nil
+default['supervisor']['inet_http_server']['password'] = nil
+default['supervisor']['inet_http_server']['ipaddress'] = node['ipaddress']
+default['supervisor']['inet_http_server']['port'] = '9001'

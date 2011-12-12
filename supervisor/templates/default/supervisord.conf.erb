@@ -6,6 +6,13 @@ file=/var/run//supervisor.sock   ; (the path to the socket file)
 chmod=0770                       ; socket file mode (default 0700)
 chown=root:<%= node['supervisor']['group'] %>
 
+<% if node['supervisor']['inet_http_server']['enabled'] -%>
+[inet_http_server]
+port = <%= node['supervisor']['inet_http_server']['ipaddress'] %>:<%= node['supervisor']['inet_http_server']['port'] %>
+<%= "username = #{node['supervisor']['inet_http_server']['username']}" if node['supervisor']['inet_http_server']['username'] %>
+<%= "password = #{node['supervisor']['inet_http_server']['password']}" if node['supervisor']['inet_http_server']['password'] %>
+<% end -%>
+
 [supervisord]
 logfile=/var/log/supervisor/supervisord.log ; (main log file;default $CWD/supervisord.log)
 pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
