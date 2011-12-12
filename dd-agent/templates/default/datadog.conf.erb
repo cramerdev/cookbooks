@@ -27,14 +27,15 @@ hostname: <%= node.name %>
 # Service-specific configuration                                             #
 # ========================================================================== #
 
+<% if node['apache'] %>
 # -------------------------------------------------------------------------- #
 #   Apache                                                                   #
 # -------------------------------------------------------------------------- #
 
 # Url to Apache's status page. Must have mod_status installed.
 # See http://httpd.apache.org/docs/2.0/mod/mod_status.html for details.
-#apache_status_url: http://www.example.com/server-status/?auto
-
+apache_status_url: http://localhost/server-status/?auto
+<% end %>
 
 # -------------------------------------------------------------------------- #
 #   Ganglia                                                                  #
@@ -46,22 +47,23 @@ hostname: <%= node.name %>
 # Ganglia port where gmetad is running
 #ganglia_port: 8651
 
-
+<% if node.recipe?('mysql::server') && node['mysql'] &&
+      node['mysql']['server_monitoring_password'] %>
 # -------------------------------------------------------------------------- #
 #   MySQL                                                                    #
 # -------------------------------------------------------------------------- #
 
 # MySQL host
-#mysql_server:
+mysql_server: localhost
 
 # MySQL user. It only runs "SHOW STATUS" queries, which doesn't require
 # any privileges, so you should consider creating a separate, unprivileged
 # user
-#mysql_user:
+mysql_user: monitoring
 
 # MySQL user's password
-#mysql_pass:
-
+mysql_pass: <%= node['mysql']['server_monitoring_password'] %>
+<% end %>
 
 # -------------------------------------------------------------------------- #
 #   Nginx                                                                    #
