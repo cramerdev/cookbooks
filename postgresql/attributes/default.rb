@@ -1,8 +1,8 @@
 #
 # Cookbook Name:: postgresql
-# Attributes:: default
+# Attributes:: postgresql
 #
-# Copyright 2010, Estately, Inc.
+# Copyright 2008-2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,29 +17,56 @@
 # limitations under the License.
 #
 
-default.postgresql.data_directory                 "/var/lib/postgresql/9.0/main"
-default.postgresql.max_connections                100
-default.postgresql.ssl                            false
-default.postgresql.shared_buffers                 "24MB"
-default.postgresql.work_mem                       "1MB"
-default.postgresql.maintenance_work_mem           "16MB"
-default.postgresql.wal_buffers                    "64kB"
-default.postgresql.checkpoint_segments            3
-default.postgresql.checkpoint_completion_target   0.5
-default.postgresql.effective_cache_size           "128MB"
-default.postgresql.log_min_duration_statement     "-1"
-default.postgresql.log_duration                   "off"
-default.postgresql.log_line_prefix                "%t "
-default.postgresql.log_statement                  "none"
-default.postgresql.autovacuum_vacuum_threshold    50
-default.postgresql.autovacuum_vacuum_scale_factor 0.2
+case platform
+when "debian"
 
-# these two settings are determing at postgresql compile-time, so they
-# should only be set if your postgresql already has different values.
-default.postgresql.block_size     8192
-default.postgresql.wal_block_size 8192
+  if platform_version.to_f == 5.0
+    default[:postgresql][:version] = "8.3"
+  elsif platform_version =~ /squeeze/
+    default[:postgresql][:version] = "8.4"
+  end
 
-# default shmmax setting... it's probably too low, which will cause your
-# postgresql server to not start up. override this fo' sho'
-total_memory          = node.memory.total.match( /^(\d+)/ )[1].to_i * 1_024
-default.sysctl.shmmax = (total_memory * 0.02).to_i
+  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+
+when "ubuntu"
+
+  case
+  when platform_version.to_f <= 9.04
+    default[:postgresql][:version] = "8.3"
+  when platform_version.to_f <= 11.04
+    default[:postgresql][:version] = "8.4"
+  else
+    default[:postgresql][:version] = "9.1"
+  end
+
+  set[:postgresql][:dir] = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+
+when "fedora"
+
+  if platform_version.to_f <= 12
+    default[:postgresql][:version] = "8.3"
+  else
+    default[:postgresql][:version] = "8.4"
+  end
+
+  set[:postgresql][:dir] = "/var/lib/pgsql/data"
+
+when "redhat","centos","scientific","amazon"
+
+  default[:postgresql][:version] = "8.4"
+  set[:postgresql][:dir] = "/var/lib/pgsql/data"
+
+when "suse"
+
+  if platform_version.to_f <= 11.1
+    default[:postgresql][:version] = "8.3"
+  else
+    default[:postgresql][:version] = "8.4"
+  end
+
+  set[:postgresql][:dir] = "/var/lib/pgsql/data"
+
+else
+  default[:postgresql][:version] = "8.4"
+  set[:postgresql][:dir]         = "/etc/postgresql/#{node[:postgresql][:version]}/main"
+end
