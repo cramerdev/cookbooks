@@ -41,7 +41,7 @@ package "mysql-devel" do
 end
 
 if platform?(%w{ redhat centos fedora suse })
-  package 'ruby-mysql'
+  #package 'ruby-mysql'
 elsif platform?(%w{ debian ubuntu })
   package "libmysql-ruby"
 else
