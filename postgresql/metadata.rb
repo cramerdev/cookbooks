@@ -9,6 +9,7 @@ recipe            "postgresql::client", "Installs postgresql client package(s)"
 recipe            "postgresql::server", "Installs postgresql server packages, templates"
 recipe            "postgresql::server_redhat", "Installs postgresql server packages, redhat family style"
 recipe            "postgresql::server_debian", "Installs postgresql server packages, debian family style"
+recipe            "postgresql::pgpool", "Installs pgpool-II"
 
 %w{ ubuntu debian fedora suse }.each do |os|
   supports os
@@ -19,3 +20,4 @@ end
 end
 
 depends "openssl"
+depends "tar"
