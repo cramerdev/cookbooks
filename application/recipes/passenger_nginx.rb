@@ -30,12 +30,12 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
   variables(
     :app => app,
     :docroot => "#{app[:deploy_to]}/current/public",
-    :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
+    :server_name => (app[:domain_name] || {})[node.chef_environment] ||
       "#{app[:id]}.#{node[:domain]}",
     :server_aliases => [ node[:fqdn], app[:id] ],
-    :rails_env => node[:app_environment],
-    :ssl => (app[:ssl] || {})[node[:app_environment]] || {},
-    :auth => (app[:auth] || {})[node[:app_environment]] || {}
+    :rails_env => node.chef_environment,
+    :ssl => (app[:ssl] || {})[node.chef_environment] || {},
+    :auth => (app[:auth] || {})[node.chef_environment] || {}
   )
   notifies :restart, 'service[nginx]'
 end

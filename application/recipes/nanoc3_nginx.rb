@@ -43,10 +43,10 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
   variables(
     :app => app[:id],
     :docroot => "#{app[:deploy_to]}/current/deploy",
-    :server_name => (app[:domain_name] || {})[node[:app_environment]] ||
+    :server_name => (app[:domain_name] || {})[node.chef_environment] ||
       "#{app[:id]}.#{node[:domain]}",
     :server_aliases => [ node[:fqdn], app[:id] ],
-    :domain_aliases => (app[:domain_aliases] || {})[node[:app_environment]] || []
+    :domain_aliases => (app[:domain_aliases] || {})[node.chef_environment] || []
   )
   notifies :restart, resources('service[nginx]')
 end
@@ -101,12 +101,12 @@ end
 
 ## Then, deploy
 deploy_revision app[:id] do
-  revision (app[:revision] || {})[node.app_environment] || 'HEAD'
+  revision (app[:revision] || {})[node.chef_environment] || 'HEAD'
   repository app[:repository]
   user app[:owner]
   group app[:group]
   deploy_to app[:deploy_to]
-  action (app[:force] || {})[node.app_environment] ? :force_deploy : :deploy
+  action (app[:force] || {})[node.chef_environment] ? :force_deploy : :deploy
   ssh_wrapper "#{app[:deploy_to]}/deploy-ssh-wrapper" if app[:deploy_key]
   migrate false
   symlink_before_migrate({})
@@ -118,7 +118,7 @@ deploy_revision app[:id] do
       cwd release_path
     end
     execute 'nanoc3 compile' do
-      command 'nanoc3 compile && rake deploy:rsync'
+      command 'bundle exec nanoc3 compile && rake deploy:rsync'
       user app[:owner]
       cwd release_path
     end
