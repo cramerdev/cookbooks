@@ -15,4 +15,4 @@ GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '<%= node['mysql']['server_root_pas
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('<%= node['mysql']['server_root_password'] %>');
 
 # Create a monitoring user
-GRANT PROCESS ON *.* TO 'monitoring'@'localhost' IDENTIFIED BY '<%= node[:mysql][:server_monitoring_password] %>'
+GRANT SUPER, PROCESS ON *.* TO 'monitoring'@'localhost' IDENTIFIED BY '<%= node[:mysql][:server_monitoring_password] %>'
