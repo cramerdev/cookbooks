@@ -8,3 +8,4 @@ recipe           "nodejs", "Installs Node.JS from source"
 recipe           "nodejs::npm", "Installs npm - a package manager for node"
 
 depends          "build-essential"
+depends          "apt"
