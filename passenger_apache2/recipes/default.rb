@@ -41,6 +41,12 @@ gem_package "passenger" do
 end
 
 execute "passenger_module" do
-  command 'echo -en "\n\n\n\n" | passenger-install-apache2-module'
+  command 'passenger-install-apache2-module --auto'
   creates node[:passenger][:module_path]
+end
+
+if platform?("redhat", "centos", "scientific", "fedora", "arch", "suse" )
+  link "#{node['apache']['lib_dir']}/modules/mod_passenger.so" do
+    to node['passenger']['module_path']
+  end
 end
