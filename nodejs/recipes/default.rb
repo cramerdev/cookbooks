@@ -19,9 +19,23 @@
 #
 
 case node[:platform]
-  when "centos","redhat","fedora","debian"
-    include_recipe 'nodejs::source'
-  when "ubuntu"
+  when 'centos', 'redhat', 'scientific'
+    file = '/usr/local/src/nodejs-stable-release.noarch.rpm'
+
+    remote_file file do
+      source 'http://nodejs.tchol.org/repocfg/el/nodejs-stable-release.noarch.rpm'
+      action :create_if_missing
+    end
+
+    yum_package 'nodejs-stable-release' do
+      source file
+      options '--nogpgcheck'
+    end
+
+    %w{ nodejs nodejs-compat-symlinks npm }.each do |pkg|
+      package pkg
+    end
+  when 'ubuntu'
     apt_repository 'node.js' do
       uri 'http://ppa.launchpad.net/chris-lea/node.js/ubuntu'
       distribution node['lsb']['codename']
@@ -34,4 +48,6 @@ case node[:platform]
     %w{ nodejs npm }.each do |pkg|
       package pkg
     end
+  else
+    include_recipe 'nodejs::source'
 end
