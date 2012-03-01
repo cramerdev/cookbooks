@@ -22,6 +22,12 @@
   <Proxy *>
     Order deny,allow
     Allow from all
+    <% if (@app[:auth] || {})['type'] == 'basic' && !(@app['ssl'] || {})['required'] %>
+    AuthType Basic
+    AuthName <%= @app['id'] %>
+    AuthUserFile <%= node['apache']['dir'] %>/passwd/<%= @app['id'] %>.htpasswd
+    Require valid-user
+    <% end %>
   </Proxy>
   ProxyPass / http://localhost:<%= @app[:port] %>/
   ProxyPassReverse / http://localhost:<%= @app[:port] %>
@@ -38,6 +44,12 @@
   <Proxy *>
     Order deny,allow
     Allow from all
+    <% if (@app[:auth] || {})['type'] == 'basic' %>
+    AuthType Basic
+    AuthName <%= @app['id'] %>
+    AuthUserFile <%= node['apache']['dir'] %>/passwd/<%= @app['id'] %>.htpasswd
+    Require valid-user
+    <% end %>
   </Proxy>
   ProxyPass / http://localhost:<%= @app[:port] %>/
   ProxyPassReverse / http://localhost:<%= @app[:port] %>

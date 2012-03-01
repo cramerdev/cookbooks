@@ -124,6 +124,13 @@ directory "#{node[:apache][:dir]}/ssl" do
   group "root"
 end
 
+directory "#{node[:apache][:dir]}/passwd" do
+  action :create
+  mode 0755
+  owner "root"
+  group "root"
+end
+
 directory "#{node[:apache][:dir]}/conf.d" do
   action :create
   mode 0755
