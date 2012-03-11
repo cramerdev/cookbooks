@@ -18,7 +18,7 @@
 #
 
 search(:apps) do |app|
-  (app["server_roles"] & node.run_list.roles).each do |app_role|
+  ((app["server_roles"] || []) & node.run_list.roles).each do |app_role|
     app["type"][app_role].each do |thing|
       thing = "application::#{thing}"
       node.run_state[:current_app] = app
