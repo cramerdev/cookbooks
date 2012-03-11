@@ -28,14 +28,14 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
   group 'root'
   mode 0644
   variables(
-    :app => app,
-    :docroot => "#{app[:deploy_to]}/current/public",
+    :app            => app,
+    :docroot        => "#{app[:deploy_to]}/current/public",
     :server_name => (app[:domain_name] || {})[node.chef_environment] ||
       "#{app[:id]}.#{node[:domain]}",
     :server_aliases => [ node[:fqdn], app[:id] ],
-    :rails_env => node.chef_environment,
-    :ssl => (app[:ssl] || {})[node.chef_environment] || {},
-    :auth => (app[:auth] || {})[node.chef_environment] || {}
+    :rails_env      => node.chef_environment,
+    :ssl            => (app[:ssl] || {})[node.chef_environment] || {},
+    :auth           => (app[:auth] || {})[node.chef_environment] || {}
   )
   notifies :restart, 'service[nginx]'
 end
@@ -44,11 +44,13 @@ nginx_site "#{app['id']}.conf" do
   notifies :restart, 'service[nginx]'
 end
 
-d = resources(:deploy_revision => app[:id])
-d.restart_command do
-  execute 'restart passenger' do
-    user app[:owner]
-    command "touch #{app[:deploy_to]}/current/tmp/restart.txt"
+# Restart chef-deployed rails apps
+if app['deploy_with'] && app['deploy_with'] == 'chef'
+  d = resources(:deploy_revision => app[:id])
+  d.restart_command do
+    execute 'restart passenger' do
+      user app['owner'] || app['user']
+      command "touch #{app[:deploy_to]}/current/tmp/restart.txt"
+    end
   end
 end
-
