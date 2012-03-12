@@ -17,6 +17,13 @@
 # limitations under the License.
 #
 
+case node['platform']
+when 'ubuntu','debian'
+  package 'libyaml-dev'
+when 'redhat','centos'
+  package 'libyaml-devel'
+end
+
 app = node.run_state[:current_app]
 
 # Defaults

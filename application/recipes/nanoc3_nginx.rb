@@ -15,6 +15,11 @@ end
 
 app = node.run_state[:current_app]
 
+# Set defaults
+app['owner'] ||= app['user']
+app['group'] ||= app['user']
+app['deploy_to'] ||= "/home/#{app['user']}/#{app['id']}"
+
 ## First, install any application specific packages
 if app[:packages]
   app[:packages].each do |pkg,ver|
@@ -67,13 +72,6 @@ directory "#{app[:deploy_to]}/shared" do
   recursive true
 end
 
-directory "#{app[:deploy_to]}/shared/output" do
-  owner app[:owner]
-  group app[:group]
-  mode 0755
-  recursive true
-end
-
 if app.has_key?('deploy_key')
   ruby_block 'write_key' do
     block do
@@ -100,27 +98,29 @@ if app.has_key?('deploy_key')
 end
 
 ## Then, deploy
-deploy_revision app[:id] do
-  revision (app[:revision] || {})[node.chef_environment] || 'HEAD'
-  repository app[:repository]
-  user app[:owner]
-  group app[:group]
-  deploy_to app[:deploy_to]
-  action (app[:force] || {})[node.chef_environment] ? :force_deploy : :deploy
-  ssh_wrapper "#{app[:deploy_to]}/deploy-ssh-wrapper" if app[:deploy_key]
-  migrate false
-  symlink_before_migrate({})
-  symlinks({})
+if app['deploy_with'] && app['deploy_with'] == 'chef'
+  deploy_revision app[:id] do
+    revision (app[:revision] || {})[node.chef_environment] || 'HEAD'
+    repository app[:repository]
+    user app[:owner]
+    group app[:group]
+    deploy_to app[:deploy_to]
+    action (app[:force] || {})[node.chef_environment] ? :force_deploy : :deploy
+    ssh_wrapper "#{app[:deploy_to]}/deploy-ssh-wrapper" if app[:deploy_key]
+    migrate false
+    symlink_before_migrate({})
+    symlinks({})
 
-  before_symlink do
-    execute 'bundle' do
-      command 'bundle --system --without development test'
-      cwd release_path
-    end
-    execute 'nanoc3 compile' do
-      command 'bundle exec nanoc3 compile && rake deploy:rsync'
-      user app[:owner]
-      cwd release_path
+    before_symlink do
+      execute 'bundle' do
+        command 'bundle --system --without development test'
+        cwd release_path
+      end
+      execute 'nanoc3 compile' do
+        command 'bundle exec nanoc3 compile && rake deploy:rsync'
+        user app[:owner]
+        cwd release_path
+      end
     end
   end
 end
