@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: nginx
-# Recipe:: source
+# Recipe:: passenger
 #
 # Author:: Adam Jacob (<adam@opscode.com>)
 # Author:: Joshua Timberman (<joshua@opscode.com>)
@@ -21,7 +21,6 @@
 #
 
 include_recipe 'build-essential'
-include_recipe 'supervisor'
 
 packages = value_for_platform(
     ["centos","redhat","fedora"] => {'default' => ['pcre-devel', 'openssl-devel']},
@@ -40,7 +39,6 @@ nginx_version = node[:nginx][:version]
 
 node.set[:nginx][:install_path]    = "/opt/nginx-#{nginx_version}"
 node.set[:nginx][:src_binary]      = "#{node[:nginx][:install_path]}/sbin/nginx"
-node.set[:nginx][:daemon_disable]  = true
 node.set[:nginx][:configure_flags] = [
   "--prefix=#{node[:nginx][:install_path]}",
   "--conf-path=#{node[:nginx][:dir]}/nginx.conf",
@@ -61,6 +59,35 @@ directory node[:nginx][:log_dir] do
   mode 0755
   owner node[:nginx][:user]
   action :create
+end
+
+# Init scripts
+case node['platform']
+#when 'centos','redhat'
+  # TODO. See http://wiki.nginx.org/RedHatNginxInitScript
+when 'ubuntu','debian'
+  node.set[:nginx][:daemon_disable]  = false
+
+  template '/etc/init.d/nginx' do
+    source 'nginx.init-debian.erb'
+    mode '0755'
+  end
+
+  service 'nginx' do
+    subscribes :restart, resources('bash[compile_nginx_source]')
+    supports [:start, :stop, :restart]
+    action [:enable, :start]
+  end
+else
+  include_recipe 'supervisor'
+  node.set[:nginx][:daemon_disable]  = true
+
+  service 'nginx' do
+    provider 'supervisor_service'
+    start_command "#{node[:nginx][:src_binary]} -c #{node[:nginx][:dir]}/nginx.conf"
+    subscribes :restart, resources('bash[compile_nginx_source]')
+    action [:enable, :start]
+  end
 end
 
 # Rotate logs
@@ -89,13 +116,6 @@ cookbook_file '/var/www/nginx-default/index.html' do
   owner 'root'
   group 'root'
   mode '0644'
-end
-
-service 'nginx' do
-  provider 'supervisor_service'
-  start_command "#{node[:nginx][:src_binary]} -c #{node[:nginx][:dir]}/nginx.conf"
-  subscribes :restart, resources('bash[compile_nginx_source]')
-  action [:enable, :start]
 end
 
 %w{ sites-available sites-enabled conf.d }.each do |dir|
