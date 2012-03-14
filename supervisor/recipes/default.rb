@@ -2,7 +2,7 @@
 # Cookbook Name:: supervisor
 # Recipe:: default
 #
-# Copyright 2011, Cramer Development, Inc.
+# Copyright 2011-2012, Cramer Development, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,6 +35,11 @@ end
 service 'supervisor' do
   ignore_failure true
   action [:enable, :start]
+end
+
+directory '/etc/supervisor/conf.d' do
+  mode '0755'
+  recursive true
 end
 
 template '/etc/supervisor/supervisord.conf' do

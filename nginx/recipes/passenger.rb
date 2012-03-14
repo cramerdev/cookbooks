@@ -22,8 +22,10 @@
 
 include_recipe 'build-essential'
 
+user node['nginx']['user']
+
 packages = value_for_platform(
-    ["centos","redhat","fedora"] => {'default' => ['pcre-devel', 'openssl-devel']},
+    ["centos","redhat","fedora"] => {'default' => ['curl-devel', 'pcre-devel', 'openssl-devel']},
     "default" => ['libpcre3', 'libpcre3-dev', 'libssl-dev', 'libcurl4-openssl-dev']
   )
 
@@ -43,7 +45,9 @@ node.set[:nginx][:configure_flags] = [
   "--prefix=#{node[:nginx][:install_path]}",
   "--conf-path=#{node[:nginx][:dir]}/nginx.conf",
   "--with-http_ssl_module",
-  "--with-http_gzip_static_module"
+  "--with-http_gzip_static_module",
+  '--with-http_stub_status_module',
+  '--with-http_realip_module'
 ]
 
 configure_flags = node[:nginx][:configure_flags].join(" ")
@@ -63,8 +67,19 @@ end
 
 # Init scripts
 case node['platform']
-#when 'centos','redhat'
-  # TODO. See http://wiki.nginx.org/RedHatNginxInitScript
+when 'centos','redhat'
+  node.set[:nginx][:daemon_disable]  = false
+
+  template '/etc/init.d/nginx' do
+    source 'nginx.init-redhat.erb'
+    mode '0755'
+  end
+
+  service 'nginx' do
+    subscribes :restart, resources('bash[compile_nginx_source]')
+    supports [:start, :stop, :restart]
+    action [:enable, :start]
+  end
 when 'ubuntu','debian'
   node.set[:nginx][:daemon_disable]  = false
 
@@ -76,16 +91,6 @@ when 'ubuntu','debian'
   service 'nginx' do
     subscribes :restart, resources('bash[compile_nginx_source]')
     supports [:start, :stop, :restart]
-    action [:enable, :start]
-  end
-else
-  include_recipe 'supervisor'
-  node.set[:nginx][:daemon_disable]  = true
-
-  service 'nginx' do
-    provider 'supervisor_service'
-    start_command "#{node[:nginx][:src_binary]} -c #{node[:nginx][:dir]}/nginx.conf"
-    subscribes :restart, resources('bash[compile_nginx_source]')
     action [:enable, :start]
   end
 end
