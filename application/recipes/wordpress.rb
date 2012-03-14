@@ -20,24 +20,64 @@ app = node.run_state[:current_app]
 
 include_recipe "apache2"
 
+app['owner'] ||= app['user']
+app['group'] ||= app['user']
+
 directory app[:deploy_to] do
-  owner app[:owner] || node[:apache][:user]
-  group app[:group] || node[:apache][:user]
+  owner node[:apache][:user]
+  group node[:apache][:user]
   mode "0755"
   action :create
 end
 
+# This is another kind of a hack to deal with the transition between deploy
+# strategies for one project.
+unless app['skip_wp']
+  remote_file "#{Chef::Config[:file_cache_path]}/wordpress.tar.gz" do
+    source 'http://wordpress.org/latest.tar.gz'
+    mode '0644'
+    action :create_if_missing
+  end
+  execute 'extract wordpress' do
+    command "tar xfz #{Chef::Config[:file_cache_path]}/wordpress.tar.gz -C #{app['deploy_to']} --strip=1 wordpress/*"
+    user node['apache']['user']
+    creates "#{app['deploy_to']}/wp-app.php"
+  end
+
+  ['', 'plugins', 'themes'].each do |dir|
+    directory "#{app['deploy_to']}/wp-content/#{dir}" do
+      owner node['apache']['user']
+      group node['apache']['group']
+      mode '0755'
+    end
+  end
+
+  file "#{app['deploy_to']}/.htaccess" do
+      owner node['apache']['user']
+      group node['apache']['group']
+      mode '0644'
+      action :create_if_missing
+  end
+end
+
+# Set the config directory based on the "deploy_with" directive
+#
+# This is kind of a hack to deal with the transition between deploy strategies
+# for one project.
+config_path = app['deploy_with'] == 'cap' ? "#{app['deploy_to']}/shared/config" :
+  app['deploy_to']
+
 unless app[:skip_config]
   template "wp-config.php" do
-    path "#{app[:deploy_to]}/shared/config/wp-config.php"
+    path "#{config_path}/wp-config.php"
     variables(
       :db => app[:databases][node[:app_environment]].merge(:host => "localhost"),
       :keys => app[:wordpress][:keys],
       :url => "http://" + app[:domain_name][node[:app_environment]]
     )
-    owner app[:owner]
-    group app[:group]
-    mode "0644"
+    owner node['apache']['user']
+    group node['apache']['group']
+    mode '0600'
   end
 end
 
@@ -45,11 +85,12 @@ end
 app_conf = app[:default_site] ? "0000-#{app[:id]}" : app[:id]
 
 web_app app_conf do
-  docroot app[:docroot] || "#{app[:deploy_to]}/current"
+  docroot app['docroot'] || app['deploy_to']
   template "web_app.conf.erb"
-  cookbook app[:id]
+  cookbook app['cookbook'] || app['id']
+  user app['owner']
   ssl app[:ssl] || {}
-  server_name app[:domain_name][(node[:app_environment] || 'production')]
+  server_name app[:domain_name][(node[chef_environment] || 'production')]
   log_dir node[:apache][:log_dir]
 end
 
