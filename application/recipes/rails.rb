@@ -29,6 +29,7 @@ app = node.run_state[:current_app]
 # Defaults
 app['owner'] ||= app['user']
 app['group'] ||= app['user']
+app['database_master_role'] ||= []
 
 # make the _default chef_environment look like the Rails production environment
 rails_env = (node.chef_environment =~ /_default/ ? "production" : node.chef_environment)
@@ -111,11 +112,15 @@ if app.has_key?("deploy_key")
   end
 end
 
-if app["database_master_role"]
+hostname_from_data_bag = app['databases'][node.chef_environment]['hostname']
+if !app["database_master_role"].empty? || hostname_from_data_bag
   dbm = nil
   # If we are the database master
   if node.run_list.roles.include?(app["database_master_role"][0])
     dbm = node
+  elsif hostname_from_data_bag
+    # Do nothing
+    dbm = true
   else
   # Find the database master
     results = search(:node, "roles:#{app["database_master_role"][0]} AND chef_environment:#{node.chef_environment}", nil, 0, 1)
@@ -133,7 +138,7 @@ if app["database_master_role"]
       group app["group"]
       mode '0600'
       variables(
-        :host => (dbm.attribute?('cloud') ? dbm['cloud']['local_ipv4'] : dbm['ipaddress']),
+        :host => hostname_from_data_bag || (dbm.attribute?('cloud') ? dbm['cloud']['local_ipv4'] : dbm['ipaddress']),
         :databases => app['databases'],
         :rails_env => rails_env
       )
