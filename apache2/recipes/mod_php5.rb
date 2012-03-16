@@ -44,13 +44,6 @@ when "redhat", "centos", "scientific"
   file "#{node[:apache][:dir]}/conf.d/php.conf" do
     action :delete
   end
-
-  # replace with debian style config
-  template "#{node[:apache][:dir]}/mods-available/php5.conf" do
-    source "mods/php5.conf.erb" 
-    notifies :restart, "service[apache2]"
-  end
-
 when "fedora"
   package "php package" do
      package_name "php"
@@ -62,12 +55,6 @@ when "fedora"
   file "#{node[:apache][:dir]}/conf.d/php.conf" do
     action :delete
   end
-
-  # replace with debian style config
-  template "#{node[:apache][:dir]}/mods-available/php5.conf" do
-    source "mods/php5.conf.erb" 
-    notifies :restart, "service[apache2]"
-  end
 end
 
 apache_module "php5" do
@@ -75,4 +62,10 @@ apache_module "php5" do
   when "redhat","centos","scientific","fedora"
     filename "libphp5.so"
   end
+end
+
+# replace with debian style config
+template "#{node[:apache][:dir]}/mods-available/php5.conf" do
+  source "mods/php5.conf.erb" 
+  notifies :restart, "service[apache2]"
 end

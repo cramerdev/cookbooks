@@ -102,4 +102,7 @@ default[:apache][:worker][:maxsparethreads] = 192
 default[:apache][:worker][:threadsperchild] = 64
 default[:apache][:worker][:maxrequestsperchild] = 0
 
+# Modules
+default[:apache][:mod_php5][:allow_php_in_user_directories] = false
+
 default[:apache][:enable_default_site] = true

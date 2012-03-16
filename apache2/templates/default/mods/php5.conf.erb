@@ -5,6 +5,7 @@
     <FilesMatch "\.phps$">
 	SetHandler application/x-httpd-php-source
     </FilesMatch>
+    <% unless node['apache']['mod_php5']['allow_php_in_user_directories'] -%>
     # To re-enable php in user directories comment the following lines
     # (from <IfModule ...> to </IfModule>.) Do NOT set it to On as it
     # prevents .htaccess files from disabling it.
@@ -13,4 +14,5 @@
             php_admin_value engine Off
         </Directory>
     </IfModule>
+    <% end -%>
 </IfModule>
