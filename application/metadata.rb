@@ -12,6 +12,6 @@ recipe           "application::rails", "Deploys a Rails application specified in
 recipe           "application::unicorn", "Sets up the deployed Rails application with Unicorn as the web server"
 recipe           "application::wordpress", "Sets up a deployed WordPress application with Apache2 as the web server"
 
-%w{ supervisor apache2 nginx }.each do |cb|
+%w{ supervisor apache2 nginx xml }.each do |cb|
   depends cb
 end

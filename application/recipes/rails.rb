@@ -24,11 +24,14 @@ when 'redhat','centos'
   package 'libyaml-devel'
 end
 
+include_recipe 'xml'
+
 app = node.run_state[:current_app]
 
 # Defaults
 app['owner'] ||= app['user']
 app['group'] ||= app['user']
+app['shared_children'] ||= %w{ log pids system vendor_bundle }
 app['database_master_role'] ||= []
 
 # make the _default chef_environment look like the Rails production environment
@@ -62,6 +65,7 @@ if app['gems']
   end
 end
 
+# Create directories
 directory app['deploy_to'] do
   owner app['owner']
   group app['group']
@@ -76,42 +80,16 @@ directory "#{app['deploy_to']}/shared" do
   recursive true
 end
 
-%w{ log pids system vendor_bundle }.each do |dir|
-
+app['shared_children'].each do |dir|
   directory "#{app['deploy_to']}/shared/#{dir}" do
     owner app['owner']
     group app['group']
     mode '0755'
     recursive true
   end
-
 end
 
-if app.has_key?("deploy_key")
-  ruby_block "write_key" do
-    block do
-      f = ::File.open("#{app['deploy_to']}/id_deploy", "w")
-      f.print(app["deploy_key"])
-      f.close
-    end
-    not_if do ::File.exists?("#{app['deploy_to']}/id_deploy"); end
-  end
-
-  file "#{app['deploy_to']}/id_deploy" do
-    owner app['owner']
-    group app['group']
-    mode '0600'
-  end
-
-  template "#{app['deploy_to']}/deploy-ssh-wrapper" do
-    source "deploy-ssh-wrapper.erb"
-    owner app['owner']
-    group app['group']
-    mode "0755"
-    variables app.to_hash
-  end
-end
-
+# database.yml
 hostname_from_data_bag = app['databases'][node.chef_environment]['hostname']
 if !app["database_master_role"].empty? || hostname_from_data_bag
   dbm = nil
@@ -148,6 +126,7 @@ if !app["database_master_role"].empty? || hostname_from_data_bag
   end
 end
 
+# memcached.yml
 if app["memcached_role"]
   results = search(:node, "rolers:#{app["memcached_role"][0]} AND chef_environment:#{node.chef_environment} NOT hostname:#{node[:hostname]}")
   if results.length == 0
@@ -167,8 +146,33 @@ if app["memcached_role"]
   end
 end
 
-## Then, deploy
+# Then, deploy
 if app['deploy_with'] && app['deploy_with'] == 'chef'
+  if app.has_key?("deploy_key")
+    ruby_block "write_key" do
+      block do
+        f = ::File.open("#{app['deploy_to']}/id_deploy", "w")
+        f.print(app["deploy_key"])
+        f.close
+      end
+      not_if do ::File.exists?("#{app['deploy_to']}/id_deploy"); end
+    end
+
+    file "#{app['deploy_to']}/id_deploy" do
+      owner app['owner']
+      group app['group']
+      mode '0600'
+    end
+
+    template "#{app['deploy_to']}/deploy-ssh-wrapper" do
+      source "deploy-ssh-wrapper.erb"
+      owner app['owner']
+      group app['group']
+      mode "0755"
+      variables app.to_hash
+    end
+  end
+
   deploy_revision app['id'] do
     revision app['revision'][node.chef_environment]
     repository app['repository']
