@@ -30,8 +30,9 @@ template "/opt/graphite/conf/carbon.conf" do
 end
 
 template "/opt/graphite/conf/storage-schemas.conf" do
-  owner "www-data"
-  group "www-data"
+  owner node['apache']['user']
+  group node['apache']['group']
+  notifies :restart, 'service[carbon-cache]'
 end
 
 execute "carbon: change graphite storage permissions to www-data" do
