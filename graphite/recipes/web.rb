@@ -25,34 +25,32 @@ execute "install graphite-web" do
   cwd "/usr/src/graphite-web-#{version}"
 end
 
-template "/etc/apache2/sites-available/graphite" do
-  source "graphite-vhost.conf.erb"
-end
+if node['graphite']['enable_web']
+  template "/etc/apache2/sites-available/graphite" do
+    source "graphite-vhost.conf.erb"
+  end
 
-apache_site "000-default" do
-  enable false
+  apache_site "graphite"
 end
-
-apache_site "graphite"
 
 directory "/opt/graphite/storage/log" do
-  owner "www-data"
-  group "www-data"
+  owner node['apache']['user']
+  group node['apache']['user']
 end
 
 directory "/opt/graphite/storage/log/webapp" do
-  owner "www-data"
-  group "www-data"
+  owner node['apache']['user']
+  group node['apache']['user']
 end
 
 directory "/opt/graphite/storage" do
-  owner "www-data"
-  group "www-data"
+  owner node['apache']['user']
+  group node['apache']['user']
 end
 
 directory "/opt/graphite/storage/whisper" do
-  owner "www-data"
-  group "www-data"
+  owner node['apache']['user']
+  group node['apache']['user']
 end
 
 cookbook_file "/opt/graphite/bin/set_admin_passwd.py" do
@@ -70,7 +68,7 @@ execute "set admin password" do
 end
 
 file "/opt/graphite/storage/graphite.db" do
-  owner "www-data"
-  group "www-data"
+  owner node['apache']['user']
+  group node['apache']['user']
   mode "644"
 end
