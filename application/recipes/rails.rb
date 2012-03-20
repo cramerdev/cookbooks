@@ -146,6 +146,35 @@ if app["memcached_role"]
   end
 end
 
+# stats.yml
+if app['stats'] != false
+  app['stats'] ||= {}
+  app['stats'][node.chef_environment] ||= {}
+  app['stats_role'] ||= []
+
+  if app['stats_role'].empty? && app['stats'][node.chef_environment]['address'].nil?
+    warn "No stats role or address found. Not writing #{app['deploy_to']}/shared/stats.yml"
+  else
+    # Get the statsd attribute of the first stats server
+    stats_server = (search(:node, "roles:#{app['stats_role'][0]}")[0] || {})['statsd'] || {}
+
+    # Extend the data from the data bag with data returned from the search
+    app['stats'][node.chef_environment] = {
+      :app_id => app['id'],
+      :host   => stats_server['address'],
+      :port   => stats_server['port']
+    }.merge(app['stats'][node.chef_environment])
+
+    template "#{app['deploy_to']}/shared/stats.yml" do
+      owner app['owner']
+      group app['owner']
+      mode '0600'
+      source 'stats.yml.erb'
+      variables :stats => app['stats']
+    end
+  end
+end
+
 # Then, deploy
 if app['deploy_with'] && app['deploy_with'] == 'chef'
   if app.has_key?("deploy_key")
