@@ -1,8 +1,8 @@
 <%- @stats.each do |env, s| %>
 <%= env %>:
-  app_id: <%= %>
+  app_id: <%= s['app_id'] %>
   host: <%= s['host'] || 'localhost' %>
   port: <%= s['port'] || 8125 %>
-  mode: <%= s['mode'] || node.chef_environment %>
+  mode: <%= (s['mode'] || node.chef_environment).to_sym %>
   default_sample_rate: <%= s['default_sample_rate'] || 1 %>
 <%- end %>
