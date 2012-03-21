@@ -2,3 +2,6 @@
 [submodule "jenkins"]
 	path = jenkins
 	url = git@github.com:cramerdev/chef-jenkins.git
+[submodule "tor"]
+	path = tor
+	url = git@github.com:cramerdev/tor-cookbook.git
