@@ -90,7 +90,7 @@ web_app app_conf do
   cookbook app['cookbook'] || app['id']
   user app['owner']
   ssl app[:ssl] || {}
-  server_name app[:domain_name][(node[chef_environment] || 'production')]
+  server_name app[:domain_name][(node.chef_environment || 'production')]
   log_dir node[:apache][:log_dir]
 end
 
