@@ -5,3 +5,6 @@
 [submodule "tor"]
 	path = tor
 	url = git@github.com:cramerdev/tor-cookbook.git
+[submodule "annoyances"]
+	path = annoyances
+	url = git@github.com:cramerdev/annoyances-cookbook.git
