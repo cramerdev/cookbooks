@@ -8,3 +8,6 @@
 [submodule "annoyances"]
 	path = annoyances
 	url = git@github.com:cramerdev/annoyances-cookbook.git
+[submodule "sys-utils"]
+	path = sys-utils
+	url = git@github.com:cramerdev/sys-utils-cookbook.git
