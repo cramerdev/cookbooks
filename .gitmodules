@@ -14,3 +14,6 @@
 [submodule "graphite"]
 	path = graphite
 	url = git@github.com:cramerdev/graphite-cookbook.git
+[submodule "firewall"]
+	path = firewall
+	url = git@github.com:cramerdev/firewall-cookbook.git
