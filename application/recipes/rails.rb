@@ -31,7 +31,7 @@ app = node.run_state[:current_app]
 # Defaults
 app['owner'] ||= app['user']
 app['group'] ||= app['user']
-app['shared_children'] ||= %w{ log pids system vendor_bundle }
+app['shared_children'] ||= %w{ log pids system bundle }
 app['database_master_role'] ||= []
 
 # make the _default chef_environment look like the Rails production environment
