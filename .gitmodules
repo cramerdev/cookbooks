@@ -17,3 +17,6 @@
 [submodule "firewall"]
 	path = firewall
 	url = git@github.com:cramerdev/firewall-cookbook.git
+[submodule "logstash"]
+	path = logstash
+	url = git@github.com:cramerdev/logstash-cookbook.git
