@@ -20,3 +20,6 @@
 [submodule "logstash"]
 	path = logstash
 	url = git@github.com:cramerdev/logstash-cookbook.git
+[submodule "gearman"]
+	path = gearman
+	url = git@github.com:cramerdev/gearman-cookbook.git
