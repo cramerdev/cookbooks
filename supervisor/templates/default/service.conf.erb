@@ -1,6 +1,6 @@
 [program:<%= @name %>]
 command=<%= @command %>
-process_name=<%= @process_name %>
+<%= "process_name=#{@process_name}" if @process_name %>
 numprocs=<%= @numprocs %>
 numprocs_start=<%= @numprocs_start %>
 priority=<%= @priority %>
