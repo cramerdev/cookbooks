@@ -8,6 +8,6 @@
         create 640 root root
         sharedscripts
         postrotate
-                kill -USR1 `supervisorctl pid nginx`
+                /etc/init.d/nginx reload
         endscript
 }
