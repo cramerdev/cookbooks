@@ -35,18 +35,17 @@ sc = 'supervisorctl'
 action :enable do
   raise "start_command required" if new_resource.start_command.nil?
 
-  new_resource.variables ||= {}
-
-  # Convert environment hash to A=1,B=2,C=3
-  env = new_resource.variables[:environment]
-  if env.kind_of?(Hash)
-    new_resource.variables[:environment] = env.map { |k, v| "#{k}=#{v}" }.join(',')
-  end
   vars = resource_variables
 
+  # Convert environment hash to A=1,B=2,C=3
+  env = vars[:environment]
+  if env.kind_of?(Hash)
+    vars[:environment] = env.map { |k, v| "#{k}=#{v}" }.join(',')
+  end
+
   # Set program name if numprocs > 1
-  if new_resource.variables[:num_procs].to_i > 1 && !new_resource.variables.key?(:process_name)
-    new_resource.variables[:process_name] = '%(program_name)s_%(process_num)02d'
+  if vars[:num_procs].to_i > 1 && !vars.key?(:process_name)
+    vars[:process_name] = '%(program_name)s_%(process_num)02d'
   end
 
   execute "supervisorctl update" do
