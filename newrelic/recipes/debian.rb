@@ -5,7 +5,7 @@ apt_repository "newrelic" do
   distribution "newrelic"
   components [ "non-free" ]
   keyserver 'pgp.mit.edu'
-  key node[:newrelic][:key_id]
+  key node['newrelic']['key']
   action :add
 end
 
