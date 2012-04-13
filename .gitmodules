@@ -23,3 +23,6 @@
 [submodule "gearman"]
 	path = gearman
 	url = git@github.com:cramerdev/gearman-cookbook.git
+[submodule "redis"]
+	path = redis
+	url = git@github.com:cramerdev/redis-cookbook.git
