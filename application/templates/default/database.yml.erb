@@ -1,11 +1,11 @@
 <%- @databases.each do |env, db| %>
 <%= env %>:
   adapter: <%= db['adapter'] %>
-  host: <%= @host %>
-  database: <%= db['database'] %>
+  host: '<%= @host %>'
+  database: '<%= db['database'] %>'
   port: <%= db.has_key?('port') ? db['port'] : '3306' %>
-  username: <%= db['username'] %>
-  password: <%= db['password'] %>
+  username: '<%= db['username'] %>'
+  password: '<%= db['password'] %>'
   encoding: <%= db.has_key?('encoding') ? db['encoding'] : 'utf8' %>
   reconnect: true
 <%- end %>
