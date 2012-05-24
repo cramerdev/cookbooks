@@ -34,4 +34,4 @@ default[:nginx][:worker_processes]   = cpu[:total]
 default[:nginx][:worker_connections] = 2048
 default[:nginx][:server_names_hash_bucket_size] = 64
 
-default[:nginx][:passenger][:version] = '3.0.11'
+default[:nginx][:passenger][:version] = '3.0.12'
