@@ -26,3 +26,6 @@
 [submodule "redis"]
 	path = redis
 	url = git@github.com:cramerdev/redis-cookbook.git
+[submodule "perl"]
+	path = perl
+	url = git://github.com/opscode-cookbooks/perl.git
