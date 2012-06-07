@@ -4,10 +4,7 @@
         rotate 52
         compress
         delaycompress
+        copytruncate
         notifempty
         create 644 root root
-        sharedscripts
-        postrotate
-                /etc/init.d/nginx reload
-        endscript
 }
