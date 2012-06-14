@@ -32,3 +32,6 @@
 [submodule "apt"]
 	path = apt
 	url = git://github.com/opscode-cookbooks/apt.git
+[submodule "newrelic"]
+	path = newrelic
+	url = git@github.com:cramerdev/newrelic-cookbook.git
