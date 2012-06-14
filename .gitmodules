@@ -29,3 +29,6 @@
 [submodule "perl"]
 	path = perl
 	url = git://github.com/opscode-cookbooks/perl.git
+[submodule "apt"]
+	path = apt
+	url = git://github.com/opscode-cookbooks/apt.git
