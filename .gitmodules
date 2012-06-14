@@ -35,3 +35,6 @@
 [submodule "newrelic"]
 	path = newrelic
 	url = git@github.com:cramerdev/newrelic-cookbook.git
+[submodule "java"]
+	path = java
+	url = git://github.com/opscode-cookbooks/java.git
