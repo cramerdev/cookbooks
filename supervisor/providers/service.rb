@@ -40,7 +40,7 @@ action :enable do
   # Convert environment hash to A=1,B=2,C=3
   env = vars[:environment]
   if env.kind_of?(Hash)
-    vars[:environment] = env.map { |k, v| "#{k}=#{v}" }.join(',')
+    vars[:environment] = env.map { |k, v| "#{k}=\"#{v}\"" }.join(',')
   end
 
   # Set program name if numprocs > 1
