@@ -41,3 +41,6 @@
 [submodule "route53"]
 	path = route53
 	url = git://github.com/heavywater/chef-route53.git
+[submodule "rabbitmq"]
+	path = rabbitmq
+	url = git://github.com/opscode-cookbooks/rabbitmq.git
