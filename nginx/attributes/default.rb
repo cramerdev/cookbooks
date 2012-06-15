@@ -35,3 +35,4 @@ default[:nginx][:worker_connections] = 2048
 default[:nginx][:server_names_hash_bucket_size] = 64
 
 default[:nginx][:passenger][:version] = '3.0.12'
+default['nginx']['passenger']['ruby'] = node['languages']['ruby']['ruby_bin']
