@@ -21,6 +21,10 @@ app = node.run_state[:current_app]
 
 include_recipe 'nginx::passenger'
 
+server_aliases = [node['fqdn'], app['id']].concat(
+  (app['server_aliases'] || {})[node.chef_environment] || []
+)
+
 template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
   source 'web_app.conf.erb'
   cookbook app[:cookbook] || app[:id]
@@ -32,7 +36,7 @@ template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
     :docroot        => "#{app[:deploy_to]}/current/public",
     :server_name => (app[:domain_name] || {})[node.chef_environment] ||
       "#{app[:id]}.#{node[:domain]}",
-    :server_aliases => [ node[:fqdn], app[:id] ],
+    :server_aliases => server_aliases,
     :rails_env      => node.chef_environment,
     :ssl            => (app[:ssl] || {})[node.chef_environment] || {},
     :auth           => (app[:auth] || {})[node.chef_environment] || {}
