@@ -24,7 +24,7 @@ include_recipe "apache2::mod_ssl"
 include_recipe "apache2::mod_rewrite"
 include_recipe "passenger_apache2::mod_rails"
 
-server_aliases = [ "#{app['id']}.#{node[:domain]}", node.fqdn ]
+server_aliases = [ "#{app['id']}.#{node[:domain]}", node.fqdn ].concat((app['server_aliases'] || {})[node.chef_environment] || [])
 
 if node.has_key?("ec2")
   server_aliases << node.ec2.public_hostname
@@ -34,17 +34,17 @@ web_app app['id'] do
   docroot "#{app['deploy_to']}/current/public"
   template "#{app['id']}.conf.erb"
   cookbook "#{app['id']}"
-  server_name "#{app['id']}.#{node[:domain]}"
+  server_name (app['domain_name'] || {})[node.chef_environment] || "#{app['id']}.#{node[:domain]}"
   server_aliases server_aliases
   log_dir node[:apache][:log_dir]
   rails_env node.app_environment
 end
 
-d = resources(:deploy => app['id'])
-d.restart_command do
-  service "apache2" do action :restart; end
-end
+#d = resources(:deploy => app['id'])
+#d.restart_command do
+  #service "apache2" do action :restart; end
+#end
 
-apache_site "000-default" do
-  enable false
-end
+#apache_site "000-default" do
+  #enable false
+#end

@@ -90,7 +90,7 @@ app['shared_children'].each do |dir|
 end
 
 # database.yml
-hostname_from_data_bag = app['databases'][node.chef_environment]['hostname']
+hostname_from_data_bag = ((app['databases'] || {})[node.chef_environment] || {})['hostname']
 if !app["database_master_role"].empty? || hostname_from_data_bag
   dbm = nil
   # If we are the database master
