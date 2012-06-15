@@ -38,3 +38,6 @@
 [submodule "java"]
 	path = java
 	url = git://github.com/opscode-cookbooks/java.git
+[submodule "route53"]
+	path = route53
+	url = git://github.com/heavywater/chef-route53.git
