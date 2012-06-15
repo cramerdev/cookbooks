@@ -21,9 +21,12 @@ app = node.run_state[:current_app]
 
 include_recipe 'nginx::passenger'
 
-server_aliases = [node['fqdn'], app['id']].concat(
+server_aliases = [node['name'], node['fqdn'], app['id']].concat(
   (app['server_aliases'] || {})[node.chef_environment] || []
 )
+if node['cloud'] && node['cloud']['public_ipv4']
+  server_aliases << node['cloud']['public_ipv4']
+end
 
 template "#{node[:nginx][:dir]}/sites-available/#{app[:id]}.conf" do
   source 'web_app.conf.erb'
