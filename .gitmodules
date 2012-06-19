@@ -47,3 +47,6 @@
 [submodule "capybara-webkit"]
 	path = capybara-webkit
 	url = ./capybara-webkit
+[submodule "memcached"]
+	path = memcached
+	url = git@github.com:cramerdev/memcached-cookbook.git
