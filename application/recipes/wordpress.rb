@@ -67,13 +67,16 @@ end
 config_path = app['deploy_with'] == 'cap' ? "#{app['deploy_to']}/shared/config" :
   app['deploy_to']
 
+db = (app['databases'] || {})[node.chef_environment] || {}
+db['host'] ||= 'localhost'
+
 unless app[:skip_config]
   template "wp-config.php" do
     path "#{config_path}/wp-config.php"
     variables(
-      :db => app[:databases][node[:app_environment]].merge(:host => "localhost"),
+      :db   => db,
       :keys => app[:wordpress][:keys],
-      :url => "http://" + app[:domain_name][node[:app_environment]]
+      :url  => "http://" + app[:domain_name][node.chef_environment]
     )
     owner node['apache']['user']
     group node['apache']['group']
