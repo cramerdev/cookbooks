@@ -50,3 +50,6 @@
 [submodule "memcached"]
 	path = memcached
 	url = git@github.com:cramerdev/memcached-cookbook.git
+[submodule "kibana"]
+	path = kibana
+	url = git://github.com/coroutine/chef-kibana.git
