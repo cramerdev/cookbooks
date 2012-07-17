@@ -56,3 +56,6 @@
 [submodule "aws"]
 	path = aws
 	url = git://github.com/opscode-cookbooks/aws.git
+[submodule "ganglia"]
+	path = ganglia
+	url = git@github.com:cramerdev/ganglia-cookbook.git
