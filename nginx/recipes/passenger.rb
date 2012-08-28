@@ -173,5 +173,6 @@ template "#{node[:nginx][:dir]}/conf.d/passenger.conf" do
 end
 
 nginx_site 'default' do
+  enable node[:nginx][:enable_default_site]
   notifies :restart, resources('service[nginx]')
 end
