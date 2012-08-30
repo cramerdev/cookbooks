@@ -38,3 +38,5 @@ default[:nginx][:enable_default_site] = true
 
 default[:nginx][:passenger][:version] = '3.0.12'
 default['nginx']['passenger']['ruby'] = node['languages']['ruby']['ruby_bin']
+default['nginx']['passenger']['max_pool_size'] = 6
+
