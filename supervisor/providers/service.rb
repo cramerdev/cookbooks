@@ -44,7 +44,7 @@ action :enable do
   end
 
   # Set program name if numprocs > 1
-  if vars[:num_procs].to_i > 1 && !vars.key?(:process_name)
+  if vars[:numprocs].to_i > 1 && !vars.key?(:process_name)
     vars[:process_name] = '%(program_name)s_%(process_num)02d'
   end
 
