@@ -68,3 +68,6 @@
 [submodule "statsd"]
 	path = statsd
 	url = git@github.com:cramerdev/statsd-cookbook.git
+[submodule "nscd"]
+	path = nscd
+	url = git://github.com/opscode-cookbooks/nscd.git
