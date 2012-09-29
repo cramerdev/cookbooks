@@ -52,8 +52,8 @@ node.set[:nginx][:configure_flags] = [
 
 configure_flags = node[:nginx][:configure_flags].join(" ")
 
-bash "compile_nginx_source" do
-  code <<-EOH
+execute 'compile_nginx_source' do
+  command <<-EOH
     passenger-install-nginx-module --auto --prefix=#{node[:nginx][:install_path]} --auto-download --extra-configure-flags='#{configure_flags}'
   EOH
   creates node[:nginx][:src_binary]
@@ -76,7 +76,7 @@ when 'centos','redhat'
   end
 
   service 'nginx' do
-    subscribes :restart, resources('bash[compile_nginx_source]')
+    subscribes :restart, resources('execute[compile_nginx_source]')
     supports [:start, :stop, :restart]
     action [:enable, :start]
   end
@@ -89,7 +89,7 @@ when 'ubuntu','debian'
   end
 
   service 'nginx' do
-    subscribes :restart, resources('bash[compile_nginx_source]')
+    subscribes :restart, resources('execute[compile_nginx_source]')
     supports [:start, :stop, :restart]
     action [:enable, :start]
   end
