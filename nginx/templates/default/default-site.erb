@@ -1,6 +1,6 @@
 server {
   listen   80;
-  server_name  <%= node[:hostname] %>;
+  server_name  <%= node[:hostname] %> <%= node['ipaddress'] %>;
 
   access_log  <%= node[:nginx][:log_dir] %>/localhost.access.log;
 
