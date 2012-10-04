@@ -71,3 +71,6 @@
 [submodule "nscd"]
 	path = nscd
 	url = git://github.com/opscode-cookbooks/nscd.git
+[submodule "tar"]
+	path = tar
+	url = git@github.com:cramerdev/tar-cookbook.git
