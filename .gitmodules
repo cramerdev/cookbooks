@@ -74,3 +74,6 @@
 [submodule "tar"]
 	path = tar
 	url = git@github.com:cramerdev/tar-cookbook.git
+[submodule "nagios"]
+	path = nagios
+	url = git@github.com:cramerdev/nagios-cookbook.git
