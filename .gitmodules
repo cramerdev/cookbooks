@@ -77,3 +77,6 @@
 [submodule "nagios"]
 	path = nagios
 	url = git@github.com:cramerdev/nagios-cookbook.git
+[submodule "backup"]
+	path = backup
+	url = git@github.com:cramerdev/backup-cookbook.git
