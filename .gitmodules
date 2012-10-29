@@ -80,3 +80,6 @@
 [submodule "backup"]
 	path = backup
 	url = git@github.com:cramerdev/backup-cookbook.git
+[submodule "ruby_installer"]
+	path = ruby_installer
+	url = git@github.com:cramerdev/ruby_installer-cookbook.git
