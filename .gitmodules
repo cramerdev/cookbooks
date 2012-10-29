@@ -86,3 +86,6 @@
 [submodule "postgresql"]
 	path = postgresql
 	url = git://github.com/opscode-cookbooks/postgresql.git
+[submodule "database"]
+	path = database
+	url = git://github.com/opscode-cookbooks/database.git
