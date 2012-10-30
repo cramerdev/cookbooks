@@ -85,7 +85,7 @@
 	url = git@github.com:cramerdev/ruby_installer-cookbook.git
 [submodule "postgresql"]
 	path = postgresql
-	url = git://github.com/opscode-cookbooks/postgresql.git
+	url = git://github.com/phlipper/chef-postgresql.git
 [submodule "database"]
 	path = database
 	url = git://github.com/opscode-cookbooks/database.git
