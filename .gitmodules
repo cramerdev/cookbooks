@@ -92,3 +92,6 @@
 [submodule "multi-home"]
 	path = multi-home
 	url = git@github.com:cramerdev/multi-home-cookbook.git
+[submodule "nodejs"]
+	path = nodejs
+	url = git@github.com:cramerdev/nodejs-cookbook.git
