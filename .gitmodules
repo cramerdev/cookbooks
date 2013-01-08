@@ -95,3 +95,6 @@
 [submodule "nodejs"]
 	path = nodejs
 	url = git@github.com:cramerdev/nodejs-cookbook.git
+[submodule "python"]
+	path = python
+	url = git://github.com/opscode-cookbooks/python.git
