@@ -98,3 +98,6 @@
 [submodule "python"]
 	path = python
 	url = git://github.com/opscode-cookbooks/python.git
+[submodule "brightbox"]
+	path = brightbox
+	url = https://github.com/filtersquad/chef-brightbox
