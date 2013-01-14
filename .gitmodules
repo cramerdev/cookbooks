@@ -91,7 +91,7 @@
 	url = git@github.com:cramerdev/multi-home-cookbook.git
 [submodule "nodejs"]
 	path = nodejs
-	url = git@github.com:cramerdev/nodejs-cookbook.git
+	url = git://github.com/mdxp/nodejs-cookbook.git
 [submodule "python"]
 	path = python
 	url = git://github.com/opscode-cookbooks/python.git
