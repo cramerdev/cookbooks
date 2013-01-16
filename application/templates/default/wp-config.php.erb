@@ -21,16 +21,16 @@ define('WP_CACHE', true);
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', '<%= @db[:database] %>');
+define('DB_NAME', '<%= @db['database'] %>');
 
 /** MySQL database username */
-define('DB_USER', '<%= @db[:username] %>');
+define('DB_USER', '<%= @db['username'] %>');
 
 /** MySQL database password */
-define('DB_PASSWORD', '<%= @db[:password] %>');
+define('DB_PASSWORD', '<%= @db['password'] %>');
 
 /** MySQL hostname */
-define('DB_HOST', '<%= @db[:host] %>');
+define('DB_HOST', '<%= @db['host'] %>');
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -47,14 +47,14 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         '<%= @keys[:auth] %>');
-define('SECURE_AUTH_KEY',  '<%= @keys[:secure_auth] %>');
-define('LOGGED_IN_KEY',    '<%= @keys[:logged_in] %>');
-define('NONCE_KEY',        '<%= @keys[:nonce] %>');
-define('AUTH_SALT',        '<%= @keys[:auth_salt] %>');
-define('SECURE_AUTH_SALT', '<%= @keys[:secure_auth_salt] %>');
-define('LOGGED_IN_SALT',   '<%= @keys[:logged_in_salt] %>');
-define('NONCE_SALT',       '<%= @keys[:nonce_salt] %>');
+define('AUTH_KEY',         '<%= @keys['auth'] %>');
+define('SECURE_AUTH_KEY',  '<%= @keys['secure_auth'] %>');
+define('LOGGED_IN_KEY',    '<%= @keys['logged_in'] %>');
+define('NONCE_KEY',        '<%= @keys['nonce'] %>');
+define('AUTH_SALT',        '<%= @keys['auth_salt'] %>');
+define('SECURE_AUTH_SALT', '<%= @keys['secure_auth_salt'] %>');
+define('LOGGED_IN_SALT',   '<%= @keys['logged_in_salt'] %>');
+define('NONCE_SALT',       '<%= @keys['nonce_salt'] %>');
 
 /**#@-*/
 

@@ -23,7 +23,7 @@ include_recipe "apache2"
 app['owner'] ||= app['user']
 app['group'] ||= app['user']
 
-directory app[:deploy_to] do
+directory app['deploy_to'] do
   owner node[:apache][:user]
   group node[:apache][:user]
   mode "0755"
@@ -75,8 +75,8 @@ unless app[:skip_config]
     path "#{config_path}/wp-config.php"
     variables(
       :db   => db,
-      :keys => app[:wordpress][:keys],
-      :url  => "http://" + app[:domain_name][node.chef_environment]
+      :keys => app['wordpress']['keys'],
+      :url  => "http://" + app['domain_name'][node.chef_environment]
     )
     owner node['apache']['user']
     group node['apache']['group']
@@ -93,7 +93,7 @@ web_app app_conf do
   cookbook app['cookbook'] || app['id']
   user app['owner']
   ssl app[:ssl] || {}
-  server_name app[:domain_name][(node.chef_environment || 'production')]
+  server_name app['domain_name'][(node.chef_environment || 'production')]
   log_dir node[:apache][:log_dir]
 end
 
