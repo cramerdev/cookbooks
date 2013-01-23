@@ -104,3 +104,18 @@
 [submodule "sudo"]
 	path = sudo
 	url = git://github.com/opscode-cookbooks/sudo.git
+[submodule "git"]
+	path = git
+	url = git://github.com/opscode-cookbooks/git.git
+[submodule "dmg"]
+	path = dmg
+	url = git://github.com/opscode-cookbooks/dmg.git
+[submodule "windows"]
+	path = windows
+	url = git://github.com/opscode-cookbooks/windows.git
+[submodule "chef_handler"]
+	path = chef_handler
+	url = git://github.com/opscode-cookbooks/chef_handler.git
+[submodule "powershell"]
+	path = powershell
+	url = git://github.com/opscode-cookbooks/powershell.git
