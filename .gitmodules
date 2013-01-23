@@ -119,3 +119,6 @@
 [submodule "powershell"]
 	path = powershell
 	url = git://github.com/opscode-cookbooks/powershell.git
+[submodule "users"]
+	path = users
+	url = git@github.com:cramerdev/users-cookbook.git
