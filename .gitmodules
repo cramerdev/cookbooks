@@ -98,3 +98,6 @@
 [submodule "brightbox"]
 	path = brightbox
 	url = https://github.com/filtersquad/chef-brightbox
+[submodule "logrotate"]
+	path = logrotate
+	url = git://github.com/opscode-cookbooks/logrotate.git
