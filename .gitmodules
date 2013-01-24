@@ -125,3 +125,6 @@
 [submodule "mysql"]
 	path = mysql
 	url = git@github.com:cramerdev/mysql-cookbook.git
+[submodule "postfix"]
+	path = postfix
+	url = git@github.com:cramerdev/postfix-cookbook.git
