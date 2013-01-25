@@ -128,3 +128,6 @@
 [submodule "postfix"]
 	path = postfix
 	url = git@github.com:cramerdev/postfix-cookbook.git
+[submodule "php"]
+	path = php
+	url = git://github.com/opscode-cookbooks/php.git
