@@ -131,3 +131,6 @@
 [submodule "chef-php-extra"]
 	path = chef-php-extra
 	url = git://github.com/inviqa/chef-php-extra.git
+[submodule "application"]
+	path = application
+	url = git@github.com:cramerdev/application-cookbook.git
