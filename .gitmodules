@@ -16,7 +16,7 @@
 	url = git@github.com:cramerdev/graphite-cookbook.git
 [submodule "firewall"]
 	path = firewall
-	url = git@github.com:cramerdev/firewall-cookbook.git
+	url = git@github.com:opscode-cookbooks/firewall.git
 [submodule "logstash"]
 	path = logstash
 	url = git@github.com:cramerdev/logstash-cookbook.git
