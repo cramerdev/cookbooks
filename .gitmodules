@@ -134,3 +134,9 @@
 [submodule "application"]
 	path = application
 	url = git@github.com:cramerdev/application-cookbook.git
+[submodule "nfs"]
+	path = nfs
+	url = git://github.com/atomic-penguin/cookbook-nfs.git
+[submodule "line"]
+	path = line
+	url = git://github.com/someara/line-cookbook.git
