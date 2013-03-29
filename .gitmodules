@@ -140,3 +140,6 @@
 [submodule "line"]
 	path = line
 	url = git://github.com/someara/line-cookbook.git
+[submodule "subversion"]
+	path = subversion
+	url = git://github.com/opscode-cookbooks/subversion.git
