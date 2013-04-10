@@ -31,7 +31,7 @@ end
 
 cron "date" do
   minute "0"
-  command "/usr/sbin/ntpdate -4 #{node[:time][:server]}"
+  command "/usr/sbin/ntpdate -4 #{node[:time][:server]} > /dev/null"
 end
 
 service "ntp" do
