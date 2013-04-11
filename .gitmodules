@@ -143,3 +143,6 @@
 [submodule "subversion"]
 	path = subversion
 	url = git://github.com/opscode-cookbooks/subversion.git
+[submodule "nginx_simplecgi"]
+	path = nginx_simplecgi
+	url = git://github.com/heavywater/chef-nginx_simplecgi.git
