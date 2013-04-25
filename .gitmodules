@@ -146,3 +146,6 @@
 [submodule "nginx_simplecgi"]
 	path = nginx_simplecgi
 	url = git://github.com/heavywater/chef-nginx_simplecgi.git
+[submodule "wkhtmltopdf"]
+	path = wkhtmltopdf
+	url = git@github.com:firstbanco/chef-wkhtmltopdf.git
