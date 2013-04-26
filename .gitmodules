@@ -149,3 +149,6 @@
 [submodule "wkhtmltopdf"]
 	path = wkhtmltopdf
 	url = git@github.com:firstbanco/chef-wkhtmltopdf.git
+[submodule "postgis"]
+	path = postgis
+	url = git://github.com/realityforge/chef-postgis.git
