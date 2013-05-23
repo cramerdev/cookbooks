@@ -152,3 +152,6 @@
 [submodule "sphinx"]
 	path = sphinx
 	url = git://github.com/jesseadams/sphinx-cookbook.git
+[submodule "imagemagick"]
+	path = imagemagick
+	url = git@github.com:opscode-cookbooks/imagemagick.git
